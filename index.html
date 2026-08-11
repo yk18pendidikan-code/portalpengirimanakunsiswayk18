@@ -582,6 +582,7 @@
             display: flex;
             gap: 20px;
             align-items: center;
+            padding: 20px;
         }
 
         .stat-icon {
@@ -1339,9 +1340,9 @@
             .top-header {
                 flex-direction: row;
                 flex-wrap: wrap;
-                padding: 12px 15px;
-                padding-top: max(12px, env(safe-area-inset-top));
-                gap: 10px;
+                padding: 10px 12px;
+                padding-top: max(10px, env(safe-area-inset-top));
+                gap: 8px;
                 position: sticky;
                 top: 0;
                 z-index: 500;
@@ -1354,7 +1355,7 @@
             }
 
             #pageTitle {
-                font-size: 21px;
+                font-size: 18px;
             }
 
             .header-right {
@@ -1370,58 +1371,74 @@
             }
 
             .pages-container {
-                padding: 16px;
+                padding: 12px;
+            }
+
+            .page-header {
+                margin-bottom: 16px;
             }
 
             .page-header h2 {
-                font-size: 26px;
+                font-size: 18px;
             }
 
             .page-header p {
-                font-size: 15px;
+                font-size: 12.5px;
             }
 
             .dashboard-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+
+            .card {
+                margin-bottom: 12px;
             }
 
             .card-stat {
-                gap: 14px;
-                flex-wrap: wrap;
+                gap: 10px;
+                padding: 12px;
+                flex-wrap: nowrap;
             }
 
             .stat-icon {
-                width: 56px;
-                height: 56px;
-                font-size: 25px;
-                border-radius: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 17px;
+                border-radius: 8px;
             }
 
             .stat-label {
-                font-size: 12.5px;
+                font-size: 10px;
             }
 
             .stat-value {
-                font-size: 28px;
+                font-size: 19px;
+                margin-top: 2px;
             }
 
             .charts-grid {
                 grid-template-columns: 1fr;
+                gap: 12px;
             }
 
             .card-body {
-                padding: 16px;
+                padding: 12px;
+            }
+
+            .card-header {
+                padding: 12px 14px;
             }
 
             .card-header h3 {
-                font-size: 20px;
+                font-size: 15px;
             }
 
             .filter-group {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 12px;
+                gap: 8px;
             }
 
             .search-input {
@@ -1431,43 +1448,44 @@
 
             .search-input input {
                 font-size: 16px !important;
-                min-height: 48px !important;
-                padding: 12px 12px 12px 40px;
+                min-height: 42px !important;
+                padding: 10px 10px 10px 36px;
             }
 
             .select-filter {
                 width: 100%;
-                font-size: 16px;
-                min-height: 48px;
-                padding: 12px 14px;
+                font-size: 14.5px;
+                min-height: 42px;
+                padding: 10px 12px;
             }
 
             .toolbar {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 12px;
+                gap: 8px;
             }
 
             .toolbar .btn {
                 width: 100%;
                 justify-content: center;
-                font-size: 16px !important;
-                min-height: 50px !important;
+                font-size: 14px !important;
+                min-height: 42px !important;
             }
 
             .checkbox-select-all {
                 margin-left: 0;
                 justify-content: center;
-                font-size: 15px;
+                font-size: 13.5px;
             }
 
             .checkbox-select-all input {
-                width: 22px;
-                height: 22px;
+                width: 19px;
+                height: 19px;
             }
 
             .action-buttons {
                 flex-direction: column;
+                gap: 6px;
             }
 
             .action-buttons .btn {
@@ -1477,8 +1495,8 @@
 
             /* =====================================
                TABEL -> KARTU DI MOBILE
-               Supaya data siswa/log terlihat besar & jelas,
-               bukan tabel sempit yang harus di-scroll ke samping.
+               Kartu dibuat lebih RINGKAS supaya tidak
+               kegedean / berantakan di layar HP.
                ===================================== */
             #siswaTable thead,
             #logTable thead {
@@ -1501,9 +1519,9 @@
                 flex-direction: column;
                 background: var(--white);
                 border: 1px solid var(--border);
-                border-radius: 14px;
-                padding: 18px;
-                margin-bottom: 16px;
+                border-radius: 10px;
+                padding: 12px 14px;
+                margin-bottom: 10px;
                 box-shadow: var(--shadow);
                 position: relative;
             }
@@ -1512,13 +1530,13 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                gap: 10px;
-                padding: 12px 0;
+                gap: 8px;
+                padding: 7px 0;
                 border-bottom: 1px dashed var(--light);
-                font-size: 17px;
+                font-size: 13.5px;
                 white-space: normal;
                 text-align: right;
-                line-height: 1.35;
+                line-height: 1.3;
             }
 
             #siswaTable td:last-child {
@@ -1529,7 +1547,7 @@
                 content: attr(data-label);
                 font-weight: 700;
                 color: var(--gray);
-                font-size: 13px;
+                font-size: 11px;
                 text-transform: uppercase;
                 letter-spacing: 0.4px;
                 text-align: left;
@@ -1540,8 +1558,8 @@
             #siswaTable td[data-label="pilih"] {
                 order: -2;
                 position: absolute;
-                top: 16px;
-                right: 16px;
+                top: 10px;
+                right: 10px;
                 border: none;
                 padding: 0;
                 width: auto;
@@ -1550,8 +1568,8 @@
                 content: '';
             }
             #siswaTable td[data-label="pilih"] input {
-                width: 26px;
-                height: 26px;
+                width: 20px;
+                height: 20px;
             }
 
             /* Nomor urut: tidak perlu ditampilkan di kartu mobile */
@@ -1559,16 +1577,16 @@
                 display: none;
             }
 
-            /* Nama: judul kartu, besar & jelas */
+            /* Nama: judul kartu, jelas tapi tidak kebesaran */
             #siswaTable td[data-label="nama"] {
                 order: -1;
-                font-size: 23px;
+                font-size: 16.5px;
                 font-weight: 700;
                 color: var(--primary-dark);
                 border-bottom: 2px solid var(--primary-light);
-                padding-bottom: 14px;
-                margin-bottom: 6px;
-                padding-right: 48px;
+                padding-bottom: 8px;
+                margin-bottom: 4px;
+                padding-right: 36px;
                 justify-content: flex-start;
                 text-align: left;
                 line-height: 1.25;
@@ -1578,20 +1596,20 @@
             }
 
             #siswaTable td[data-label="status"] .status-badge {
-                font-size: 14px;
-                padding: 6px 16px;
+                font-size: 11px;
+                padding: 4px 12px;
             }
 
             #siswaTable td[data-label="whatsapp"] {
                 word-break: break-word;
             }
 
-            /* Aksi: tombol full-width, mudah disentuh jari */
+            /* Aksi: tombol full-width, mudah disentuh jari, tetap ringkas */
             #siswaTable td[data-label="aksi"] {
                 display: block;
                 text-align: left;
-                padding-top: 16px;
-                margin-top: 8px;
+                padding-top: 10px;
+                margin-top: 4px;
                 border-top: 1px solid var(--light);
                 border-bottom: none;
             }
@@ -1600,13 +1618,13 @@
             }
             #siswaTable td[data-label="aksi"] .action-buttons {
                 flex-direction: row;
-                gap: 10px;
+                gap: 6px;
             }
             #siswaTable td[data-label="aksi"] .btn {
                 flex: 1;
-                padding: 13px 8px !important;
-                font-size: 14.5px !important;
-                min-height: 46px !important;
+                padding: 8px 4px !important;
+                font-size: 12px !important;
+                min-height: 36px !important;
                 justify-content: center;
             }
 
@@ -1615,9 +1633,9 @@
                 display: block;
                 background: var(--white);
                 border: 1px solid var(--border);
-                border-radius: 14px;
-                padding: 16px 18px;
-                margin-bottom: 14px;
+                border-radius: 10px;
+                padding: 10px 14px;
+                margin-bottom: 8px;
                 box-shadow: var(--shadow);
             }
 
@@ -1625,13 +1643,13 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                gap: 10px;
-                padding: 10px 0;
+                gap: 8px;
+                padding: 6px 0;
                 border-bottom: 1px dashed var(--light);
-                font-size: 16px;
+                font-size: 13px;
                 white-space: normal;
                 text-align: right;
-                line-height: 1.35;
+                line-height: 1.3;
             }
 
             #logTable td:last-child {
@@ -1642,7 +1660,7 @@
                 content: attr(data-label);
                 font-weight: 700;
                 color: var(--gray);
-                font-size: 13px;
+                font-size: 11px;
                 text-transform: uppercase;
                 letter-spacing: 0.4px;
                 text-align: left;
@@ -1655,12 +1673,12 @@
 
             #logTable td[data-label="aktivitas"] {
                 order: -1;
-                font-size: 19px;
+                font-size: 15px;
                 font-weight: 700;
                 color: var(--primary-dark);
                 border-bottom: 2px solid var(--primary-light);
-                padding-bottom: 12px;
-                margin-bottom: 6px;
+                padding-bottom: 8px;
+                margin-bottom: 4px;
             }
             #logTable td[data-label="aktivitas"]::before {
                 content: '';
@@ -1668,11 +1686,12 @@
 
             .pagination {
                 flex-wrap: wrap;
+                margin-top: 12px;
             }
 
             .pagination .btn {
                 flex: 1;
-                min-width: 110px;
+                min-width: 100px;
                 justify-content: center;
             }
 
@@ -1706,27 +1725,27 @@
             }
 
             .login-box {
-                padding: 36px 26px;
+                padding: 28px 22px;
             }
 
             .login-logo {
-                width: 180px;
+                width: 150px;
             }
 
             .login-header h1 {
-                font-size: 28px;
+                font-size: 21px;
             }
 
             .login-header p {
-                font-size: 16px;
+                font-size: 14px;
             }
 
             .login-form {
-                gap: 22px;
+                gap: 16px;
             }
 
             .login-form label {
-                font-size: 16px;
+                font-size: 14px;
             }
 
             .btn,
@@ -1736,29 +1755,34 @@
             input[type="number"],
             select,
             textarea {
-                font-size: 16.5px;
-                min-height: 50px;
+                font-size: 16px;
+                min-height: 42px;
             }
 
             .btn {
-                padding: 13px 20px;
-                font-size: 16px;
+                padding: 10px 16px;
+                font-size: 14px;
             }
 
             label {
-                font-size: 15.5px;
+                font-size: 13.5px;
+            }
+
+            .modal-header {
+                padding: 14px 16px;
             }
 
             .modal-header h2 {
-                font-size: 22px;
+                font-size: 17px;
             }
 
             .modal-body {
-                padding: 22px 18px;
+                padding: 16px;
             }
 
             .modal-footer {
-                padding: 18px;
+                padding: 14px 16px;
+                flex-wrap: wrap;
             }
 
             .modal-footer .btn {
@@ -1766,41 +1790,43 @@
             }
 
             .pagination .btn {
-                min-height: 48px;
-                font-size: 15.5px;
+                min-height: 40px;
+                font-size: 13.5px;
             }
 
             #pageInfo {
-                font-size: 15px;
+                font-size: 13px;
+                min-width: 80px;
             }
         }
 
         @media (max-width: 480px) {
             .top-header {
-                padding: 10px 12px;
+                padding: 8px 10px;
             }
 
             #pageTitle {
-                font-size: 19px;
+                font-size: 16px;
             }
 
             .page-header h2 {
-                font-size: 23px;
+                font-size: 16px;
             }
 
             .page-header p {
-                font-size: 14px;
+                font-size: 12px;
             }
 
             .dashboard-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                gap: 8px;
             }
 
             .card-stat {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row;
+                align-items: center;
                 gap: 8px;
+                padding: 10px;
                 text-align: left;
             }
 
@@ -1817,42 +1843,43 @@
             }
 
             .stat-icon {
-                width: 48px;
-                height: 48px;
-                font-size: 22px;
+                width: 34px;
+                height: 34px;
+                font-size: 14px;
+                border-radius: 7px;
             }
 
             .stat-label {
-                font-size: 11.5px;
+                font-size: 9px;
             }
 
             .stat-value {
-                font-size: 24px;
-            }
-
-            #siswaTable td[data-label="nama"] {
-                font-size: 20px;
-            }
-
-            #siswaTable td {
                 font-size: 16px;
             }
 
+            #siswaTable td[data-label="nama"] {
+                font-size: 15px;
+            }
+
+            #siswaTable td {
+                font-size: 13px;
+            }
+
             #siswaTable td[data-label="aksi"] .action-buttons {
-                flex-direction: column;
+                flex-direction: row;
             }
 
             #siswaTable td[data-label="aksi"] .btn {
-                flex: none;
-                width: 100%;
+                flex: 1;
+                width: auto;
             }
 
             .login-box {
-                padding: 30px 20px;
+                padding: 24px 18px;
             }
 
             .login-header h1 {
-                font-size: 24px;
+                font-size: 19px;
             }
         }
     </style>
@@ -2855,11 +2882,12 @@
             const palette = ['#E31B23', '#A6121A', '#f39c12', '#7A0C12', '#2ecc71', '#3498db', '#9b59b6', '#2A0E0E'];
             const barColors = labels.map((_, i) => palette[i % palette.length]);
 
-            // Tinggi chart menyesuaikan JUMLAH SEKOLAH (bukan tinggi tetap),
-            // supaya tiap bar punya ruang/jarak yang cukup dan tidak berdesakan/tumpang tindih.
-            // Semakin banyak sekolah, semakin tinggi kanvasnya (bisa di-scroll di dalam wrapper).
-            const heightPerBar = 42; // px per baris sekolah, atur di sini kalau ingin lebih renggang/rapat
-            const minHeight = 320;
+            // Tinggi chart menyesuaikan JUMLAH SEKOLAH dan lebar layar,
+            // supaya tiap bar punya ruang/jarak yang cukup tanpa membuat
+            // chart terlalu tinggi/besar di layar HP.
+            const isMobile = window.innerWidth <= 768;
+            const heightPerBar = isMobile ? 30 : 42;
+            const minHeight = isMobile ? 200 : 320;
             const chartHeight = Math.max(minHeight, labels.length * heightPerBar);
 
             wrapper.style.height = chartHeight + 'px';
@@ -2899,13 +2927,13 @@
                             ticks: {
                                 stepSize: 1,
                                 precision: 0,
-                                font: { size: 13 }
+                                font: { size: isMobile ? 10 : 13 }
                             }
                         },
                         y: {
                             ticks: {
                                 autoSkip: false, // Pastikan semua nama sekolah (keterangan) tetap tampil
-                                font: { size: 13 } // teks nama sekolah dibuat lebih besar & jelas
+                                font: { size: isMobile ? 10 : 13 } // teks nama sekolah
                             }
                         }
                     }
@@ -2930,10 +2958,11 @@
             const palette = ['#E31B23', '#A6121A', '#f39c12', '#7A0C12', '#f28b82', '#2A0E0E', '#3498db', '#2ecc71'];
             const barColors = labels.map((_, i) => palette[i % palette.length]);
 
-            // Ukuran dibuat lebih RINGKAS/kecil dibanding Statistik Sekolah
-            // (heightPerBar & minHeight lebih kecil supaya chart tidak kebesaran)
-            const heightPerBar = 28;
-            const minHeight = 180;
+            // Ukuran dibuat lebih RINGKAS/kecil dibanding Statistik Sekolah,
+            // dan disesuaikan lagi untuk layar HP supaya tidak kegedean.
+            const isMobile = window.innerWidth <= 768;
+            const heightPerBar = isMobile ? 22 : 28;
+            const minHeight = isMobile ? 140 : 180;
             const chartHeight = Math.max(minHeight, labels.length * heightPerBar);
 
             wrapper.style.height = chartHeight + 'px';
@@ -2973,13 +3002,13 @@
                             ticks: {
                                 stepSize: 1,
                                 precision: 0,
-                                font: { size: 11 }
+                                font: { size: isMobile ? 9 : 11 }
                             }
                         },
                         y: {
                             ticks: {
                                 autoSkip: false,
-                                font: { size: 11 }
+                                font: { size: isMobile ? 9 : 11 }
                             }
                         }
                     }
