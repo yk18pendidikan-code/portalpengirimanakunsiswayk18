@@ -2049,9 +2049,12 @@
                     <div class="card">
                         <div class="card-header">
                             <h3>Statistik Sekolah</h3>
+                            <button class="btn-icon" id="btnRefreshStatistikSekolah" title="Refresh data">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
                         <div class="card-body">
-                            <div id="chartSekolahWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden;">
+                            <div id="chartSekolahWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden; transition: opacity 0.2s ease;">
                                 <canvas id="chartSekolah"></canvas>
                             </div>
                         </div>
@@ -2068,9 +2071,12 @@
                     <div class="card">
                         <div class="card-header">
                             <h3>Statistik Kelas</h3>
+                            <button class="btn-icon" id="btnRefreshStatistikKelas" title="Refresh data">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
                         <div class="card-body">
-                            <div id="chartKelasWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden;">
+                            <div id="chartKelasWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden; transition: opacity 0.2s ease;">
                                 <canvas id="chartKelas"></canvas>
                             </div>
                         </div>
@@ -2499,6 +2505,12 @@
         const itemsPerPage = 10;
         let charts = {};
 
+        // Cache data statistik supaya buka menu Statistik Sekolah/Kelas
+        // tidak perlu menunggu request API lagi setiap kali (data langsung
+        // ditampilkan dari cache, lalu diperbarui diam-diam di belakang layar)
+        let statistikSekolahData = null;
+        let statistikKelasData = null;
+
         // Durasi sesi sebelum auto logout (dalam milidetik)
         // 8 jam = 8 * 60 * 60 * 1000
         const SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
@@ -2673,6 +2685,25 @@
             document.getElementById('userRole').textContent = userData.role;
             document.getElementById('loginPage').classList.remove('active');
             document.getElementById('mainApp').style.display = 'flex';
+
+            // Ambil data statistik di belakang layar sedini mungkin (tidak
+            // menunggu, tidak memblokir UI) supaya saat menu Statistik
+            // Sekolah/Kelas dibuka, datanya sudah siap dan langsung tampil
+            prefetchStatistik();
+        }
+
+        function prefetchStatistik() {
+            apiCall('statistikSekolah')
+                .then(result => {
+                    if (result.status) statistikSekolahData = result.data;
+                })
+                .catch(err => console.error('Prefetch statistik sekolah gagal:', err));
+
+            apiCall('statistikKelas')
+                .then(result => {
+                    if (result.status) statistikKelasData = result.data;
+                })
+                .catch(err => console.error('Prefetch statistik kelas gagal:', err));
         }
 
         function restoreSession() {
@@ -2834,33 +2865,69 @@
             }
         }
 
-        async function loadStatistikSekolah() {
-            try {
-                showLoading();
-                const resultSekolah = await apiCall('statistikSekolah');
+        function showChartLoading(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            if (wrapper) wrapper.style.opacity = '0.35';
+        }
 
+        function hideChartLoading(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            if (wrapper) wrapper.style.opacity = '1';
+        }
+
+        async function loadStatistikSekolah() {
+            // Kalau sudah ada data (dari cache/prefetch), langsung tampilkan
+            // dulu tanpa menunggu -> terasa instan
+            if (statistikSekolahData) {
+                renderChartSekolah(statistikSekolahData);
+            } else {
+                showChartLoading('chartSekolahWrapper');
+            }
+
+            try {
+                const resultSekolah = await apiCall('statistikSekolah');
                 if (resultSekolah.status) {
-                    renderChartSekolah(resultSekolah.data);
+                    statistikSekolahData = resultSekolah.data;
+                    renderChartSekolah(statistikSekolahData);
                 }
             } catch (error) {
-                showAlert('Error loading statistik sekolah', 'danger');
+                if (!statistikSekolahData) {
+                    showAlert('Error loading statistik sekolah', 'danger');
+                }
             } finally {
-                hideLoading();
+                hideChartLoading('chartSekolahWrapper');
             }
         }
 
         async function loadStatistikKelas() {
-            try {
-                showLoading();
-                const resultKelas = await apiCall('statistikKelas');
+            if (statistikKelasData) {
+                renderChartKelas(statistikKelasData);
+            } else {
+                showChartLoading('chartKelasWrapper');
+            }
 
+            try {
+                const resultKelas = await apiCall('statistikKelas');
                 if (resultKelas.status) {
-                    renderChartKelas(resultKelas.data);
+                    statistikKelasData = resultKelas.data;
+                    renderChartKelas(statistikKelasData);
                 }
             } catch (error) {
-                console.error('Error loading charts:', error);
+                if (!statistikKelasData) {
+                    showAlert('Error loading statistik kelas', 'danger');
+                }
+            } finally {
+                hideChartLoading('chartKelasWrapper');
             }
         }
+
+        document.getElementById('btnRefreshStatistikSekolah').addEventListener('click', () => {
+            loadStatistikSekolah();
+        });
+
+        document.getElementById('btnRefreshStatistikKelas').addEventListener('click', () => {
+            loadStatistikKelas();
+        });
 
         function renderChartSekolah(data) {
             const canvas = document.getElementById('chartSekolah');
