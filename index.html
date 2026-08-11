@@ -1927,9 +1927,13 @@
                     <i class="fas fa-users"></i>
                     <span>Data Siswa</span>
                 </a>
-                <a href="#" class="menu-item" data-page="statistik">
+                <a href="#" class="menu-item" data-page="statistik-sekolah">
                     <i class="fas fa-chart-bar"></i>
-                    <span>Statistik</span>
+                    <span>Statistik Sekolah</span>
+                </a>
+                <a href="#" class="menu-item" data-page="statistik-kelas">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Statistik Kelas</span>
                 </a>
                 <a href="#" class="menu-item" data-page="setting">
                     <i class="fas fa-cog"></i>
@@ -2035,11 +2039,11 @@
                     </div>
                 </div>
 
-                <!-- STATISTIK PAGE -->
-                <div id="page-statistik" class="page-content">
+                <!-- STATISTIK SEKOLAH PAGE -->
+                <div id="page-statistik-sekolah" class="page-content">
                     <div class="page-header">
                         <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
-                        <p>Statistik sebaran siswa per sekolah dan kelas</p>
+                        <p>Statistik sebaran siswa per sekolah</p>
                     </div>
 
                     <div class="card">
@@ -2052,16 +2056,22 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="charts-grid">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>Statistik Kelas</h3>
-                            </div>
-                            <div class="card-body">
-                                <div id="chartKelasWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden;">
-                                    <canvas id="chartKelas"></canvas>
-                                </div>
+                <!-- STATISTIK KELAS PAGE -->
+                <div id="page-statistik-kelas" class="page-content">
+                    <div class="page-header">
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
+                        <p>Statistik sebaran siswa per kelas</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Statistik Kelas</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="chartKelasWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden;">
+                                <canvas id="chartKelas"></canvas>
                             </div>
                         </div>
                     </div>
@@ -2761,7 +2771,8 @@
             const titles = {
                 'dashboard': 'Dashboard',
                 'siswa': 'Data Siswa',
-                'statistik': 'Statistik',
+                'statistik-sekolah': 'Statistik Sekolah',
+                'statistik-kelas': 'Statistik Kelas',
                 'log': 'Log Aktivitas',
                 'setting': 'Setting'
             };
@@ -2773,8 +2784,10 @@
                 loadDashboard();
             } else if (page === 'siswa') {
                 loadSiswa();
-            } else if (page === 'statistik') {
-                loadCharts();
+            } else if (page === 'statistik-sekolah') {
+                loadStatistikSekolah();
+            } else if (page === 'statistik-kelas') {
+                loadStatistikKelas();
             } else if (page === 'log') {
                 loadLogs();
             } else if (page === 'setting') {
@@ -2821,13 +2834,27 @@
             }
         }
 
-        async function loadCharts() {
+        async function loadStatistikSekolah() {
             try {
+                showLoading();
                 const resultSekolah = await apiCall('statistikSekolah');
+
+                if (resultSekolah.status) {
+                    renderChartSekolah(resultSekolah.data);
+                }
+            } catch (error) {
+                showAlert('Error loading statistik sekolah', 'danger');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadStatistikKelas() {
+            try {
+                showLoading();
                 const resultKelas = await apiCall('statistikKelas');
 
-                if (resultSekolah.status && resultKelas.status) {
-                    renderChartSekolah(resultSekolah.data);
+                if (resultKelas.status) {
                     renderChartKelas(resultKelas.data);
                 }
             } catch (error) {
