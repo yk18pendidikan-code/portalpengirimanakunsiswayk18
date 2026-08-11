@@ -2476,6 +2476,29 @@
         })();
 
         // =====================================
+        // EMOJI UNTUK NOTIFIKASI (TOAST)
+        // =====================================
+        // PENTING: emoji di bawah ini DITULIS PAKAI KODE UNICODE
+        // (\u{...}), BUKAN karakter emoji langsung. Ini pola yang
+        // SAMA dengan yang sudah dipakai di Code.gs.
+        //
+        // Sebelumnya emoji-emoji ini (✅❌⚠️) ditulis LANGSUNG sebagai
+        // karakter di dalam kode showAlert(...) tersebar di berbagai
+        // tempat. Karakter emoji yang ditulis langsung seperti itu
+        // rawan RUSAK jadi tanda tanya "?" kalau file ini pernah
+        // disimpan/disalin-tempel lewat editor, git, atau proses lain
+        // yang tidak sepenuhnya UTF-8 aman untuk karakter di luar
+        // ASCII. Kode escape \u{...} di bawah ini AMAN dari masalah
+        // itu karena hanya terdiri dari huruf & angka ASCII biasa,
+        // dan browser akan selalu merakitnya kembali jadi emoji yang
+        // benar saat kode dijalankan.
+        const EMO_ALERT = {
+            check:   '\u{2705}',        // ✅ (dipakai untuk pesan sukses)
+            cross:   '\u{274C}',        // ❌ (dipakai untuk pesan gagal/error)
+            warning: '\u{26A0}\u{FE0F}' // ⚠️ (dipakai untuk pesan peringatan)
+        };
+
+        // =====================================
         // GLOBAL VARIABLES
         // =====================================
         let currentUser = null;
@@ -3369,7 +3392,7 @@
                     if (resultWA.status) {
                         // LANGSUNG buka WhatsApp tanpa menunggu update status
                         window.open(resultWA.data, '_blank');
-                        showAlert('✅ Membuka WhatsApp...', 'success');
+                        showAlert(`${EMO_ALERT.check} Membuka WhatsApp...`, 'success');
                         
                         // Tutup modal langsung
                         closeModal('modalPreview');
@@ -3381,24 +3404,24 @@
                         })
                         .then(resultUpdate => {
                             if (resultUpdate.status) {
-                                showAlert('✅ Status berhasil diubah ke TERKIRIM', 'success');
+                                showAlert(`${EMO_ALERT.check} Status berhasil diubah ke TERKIRIM`, 'success');
                                 // Refresh data setelah beberapa detik
                                 setTimeout(() => {
                                     loadSiswa();
                                 }, 800);
                             } else {
-                                showAlert('⚠️ Update status gagal: ' + resultUpdate.message, 'warning');
+                                showAlert(`${EMO_ALERT.warning} Update status gagal: ` + resultUpdate.message, 'warning');
                             }
                         })
                         .catch(err => {
                             console.error('Background update error:', err);
                         });
                     } else {
-                        showAlert('❌ Gagal membuat link WhatsApp: ' + resultWA.message, 'danger');
+                        showAlert(`${EMO_ALERT.cross} Gagal membuat link WhatsApp: ` + resultWA.message, 'danger');
                     }
                 })
                 .catch(error => {
-                    showAlert('❌ Error: ' + error.message, 'danger');
+                    showAlert(`${EMO_ALERT.cross} Error: ` + error.message, 'danger');
                 });
         });
 
