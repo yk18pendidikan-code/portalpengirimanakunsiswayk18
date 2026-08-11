@@ -1580,24 +1580,6 @@
                 flex-shrink: 0;
             }
 
-            /* Checkbox pilih: pojok kanan atas */
-            #siswaTable td[data-label="pilih"] {
-                order: -2;
-                position: absolute;
-                top: 12px;
-                right: 12px;
-                border: none;
-                padding: 0;
-                width: auto;
-            }
-            #siswaTable td[data-label="pilih"]::before {
-                content: '';
-            }
-            #siswaTable td[data-label="pilih"] input {
-                width: 22px;
-                height: 22px;
-            }
-
             /* Nomor urut: tidak ditampilkan */
             #siswaTable td[data-label="no"] {
                 display: none;
@@ -1612,7 +1594,6 @@
                 border-bottom: 2px solid var(--primary-light);
                 padding-bottom: 10px;
                 margin-bottom: 4px;
-                padding-right: 40px;
                 justify-content: flex-start;
                 text-align: left;
                 line-height: 1.2;
@@ -2120,7 +2101,6 @@
                         <table id="siswaTable" class="data-table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" class="checkbox-header"></th>
                                     <th>No</th>
                                     <th>Nama</th>
                                     <th>Kelas</th>
@@ -2133,7 +2113,7 @@
                             </thead>
                             <tbody id="siswaTableBody">
                                 <tr>
-                                    <td colspan="9" class="text-center">Memuat data...</td>
+                                    <td colspan="8" class="text-center">Memuat data...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -2471,10 +2451,10 @@
         // (\u{...}), BUKAN karakter emoji langsung. Ini pola yang
         // SAMA dengan yang sudah dipakai di Code.gs.
         //
-        // Sebelumnya emoji-emoji ini (✅❌⚠️) ditulis LANGSUNG sebagai
-        // karakter di dalam kode showAlert(...) tersebar di berbagai
-        // tempat. Karakter emoji yang ditulis langsung seperti itu
-        // rawan RUSAK jadi tanda tanya "?" kalau file ini pernah
+        // Sebelumnya emoji-emoji ini (checkmark, silang, peringatan) ditulis
+        // LANGSUNG sebagai karakter di dalam kode showAlert(...) tersebar
+        // di berbagai tempat. Karakter emoji yang ditulis langsung seperti
+        // itu rawan RUSAK jadi tanda tanya "?" kalau file ini pernah
         // disimpan/disalin-tempel lewat editor, git, atau proses lain
         // yang tidak sepenuhnya UTF-8 aman untuk karakter di luar
         // ASCII. Kode escape \u{...} di bawah ini AMAN dari masalah
@@ -2482,9 +2462,9 @@
         // dan browser akan selalu merakitnya kembali jadi emoji yang
         // benar saat kode dijalankan.
         const EMO_ALERT = {
-            check:   '\u{2705}',        // ✅ (dipakai untuk pesan sukses)
-            cross:   '\u{274C}',        // ❌ (dipakai untuk pesan gagal/error)
-            warning: '\u{26A0}\u{FE0F}' // ⚠️ (dipakai untuk pesan peringatan)
+            check:   '\u{2705}',        // check (dipakai untuk pesan sukses)
+            cross:   '\u{274C}',        // cross (dipakai untuk pesan gagal/error)
+            warning: '\u{26A0}\u{FE0F}' // warning (dipakai untuk pesan peringatan)
         };
 
         // =====================================
@@ -2495,7 +2475,6 @@
         let filteredSiswa = [];
         let currentPage = 1;
         const itemsPerPage = 10;
-        let selectedSiswa = [];
         let charts = {};
 
         // Durasi sesi sebelum auto logout (dalam milidetik)
@@ -3003,36 +2982,6 @@
             }
         });
 
-        document.getElementById('btnExportExcel').addEventListener('click', async () => {
-            try {
-                showLoading();
-                const result = await apiCall('getDataSiswa');
-
-                if (result.status && result.data.length > 0) {
-                    const ws = XLSX.utils.json_to_sheet(result.data.map((s, i) => ({
-                        'No': i + 1,
-                        'Nama': s.nama,
-                        'Kelas': s.kelas,
-                        'Sekolah': s.sekolah,
-                        'Username': s.username,
-                        'Password': s.password,
-                        'WhatsApp': s.wa,
-                        'Status': s.status
-                    })));
-
-                    const wb = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(wb, ws, 'Data Siswa');
-                    XLSX.writeFile(wb, 'Data_Siswa_' + new Date().getTime() + '.xlsx');
-
-                    showAlert('Export Excel berhasil', 'success');
-                }
-            } catch (error) {
-                showAlert('Error: ' + error.message, 'danger');
-            } finally {
-                hideLoading();
-            }
-        });
-
         document.getElementById('btnRefresh').addEventListener('click', () => {
             loadDashboard();
         });
@@ -3099,13 +3048,12 @@
             const paginatedData = filteredSiswa.slice(start, end);
 
             if (paginatedData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data</td></tr>';
                 return;
             }
 
             tbody.innerHTML = paginatedData.map((siswa, index) => `
                 <tr>
-                    <td data-label="pilih"><input type="checkbox" class="siswa-checkbox" value="${siswa.id}"></td>
                     <td data-label="no">${start + index + 1}</td>
                     <td data-label="nama">${siswa.nama}</td>
                     <td data-label="kelas">${siswa.kelas}</td>
@@ -3134,7 +3082,6 @@
             `).join('');
 
             updatePagination();
-            setupCheckboxes();
         }
 
         function updatePagination() {
@@ -3157,22 +3104,6 @@
                 currentPage++;
                 renderSiswaTable();
             }
-        });
-
-        function setupCheckboxes() {
-            document.querySelectorAll('.siswa-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    selectedSiswa = Array.from(document.querySelectorAll('.siswa-checkbox:checked'))
-                        .map(cb => cb.value);
-                });
-            });
-        }
-
-        document.getElementById('selectAll').addEventListener('change', (e) => {
-            document.querySelectorAll('.siswa-checkbox').forEach(checkbox => {
-                checkbox.checked = e.target.checked;
-            });
-            setupCheckboxes();
         });
 
         document.getElementById('siswaSearch').addEventListener('input', applyFilters);
