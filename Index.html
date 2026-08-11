@@ -2510,18 +2510,42 @@
         // =====================================
         // API CALLS
         // =====================================
+        // CATATAN PENTING:
+        // Karena file ini di-hosting TERPISAH dari Apps Script (bukan dibuka
+        // lewat script.google.com), google.script.run TIDAK BISA dipakai —
+        // API itu hanya aktif kalau HTML-nya di-render langsung oleh Apps
+        // Script. Solusinya: panggil Web App Apps Script lewat fetch() biasa,
+        // dan di sisi Code.gs tambahkan fungsi doPost(e) sebagai "dispatcher"
+        // yang meneruskan panggilan ke fungsi aslinya (login, getDashboard,
+        // dst). Lihat file Code_gs_dispatcher.txt untuk kode yang perlu
+        // ditambahkan ke Apps Script kamu.
 
-        function apiCall(functionName, params = null) {
-            return new Promise((resolve, reject) => {
-                try {
-                    google.script.run
-                        .withSuccessHandler(resolve)
-                        .withFailureHandler(reject)
-                        [functionName](params);
-                } catch (error) {
-                    reject(error);
-                }
+        // Ganti URL ini setiap kali kamu redeploy Apps Script sebagai versi baru
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyo1WG1n42KdRysXWEQtt0IRG6NW1mCmbTf7EfeWhlVChVE_P0Sxu0TuaWKPPhy98a8sA/exec";
+
+        async function apiCall(functionName, params = null) {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                // WAJIB text/plain (bukan application/json) supaya browser
+                // tidak mengirim preflight OPTIONS — Apps Script Web App
+                // tidak menangani OPTIONS sehingga preflight akan gagal.
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ fn: functionName, params: params })
             });
+
+            if (!response.ok) {
+                throw new Error('Gagal menghubungi server (HTTP ' + response.status + ')');
+            }
+
+            const result = await response.json();
+
+            // Kalau dispatcher di Code.gs mengembalikan error, lempar sebagai
+            // exception supaya ditangkap oleh blok catch pemanggilnya
+            if (result && result.__dispatchError) {
+                throw new Error(result.message || 'Terjadi kesalahan di server');
+            }
+
+            return result;
         }
 
         // =====================================
