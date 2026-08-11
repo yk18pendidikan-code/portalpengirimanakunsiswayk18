@@ -1927,6 +1927,10 @@
                     <i class="fas fa-users"></i>
                     <span>Data Siswa</span>
                 </a>
+                <a href="#" class="menu-item" data-page="statistik">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistik</span>
+                </a>
                 <a href="#" class="menu-item" data-page="setting">
                     <i class="fas fa-cog"></i>
                     <span>Setting</span>
@@ -2016,6 +2020,30 @@
 
                     <div class="card">
                         <div class="card-header">
+                            <h3>Aksi Cepat</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="action-buttons">
+                                <button id="btnResetStatus" class="btn btn-warning">
+                                    <i class="fas fa-redo"></i> Reset Semua Status
+                                </button>
+                                <button id="btnRefresh" class="btn btn-secondary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATISTIK PAGE -->
+                <div id="page-statistik" class="page-content">
+                    <div class="page-header">
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
+                        <p>Statistik sebaran siswa per sekolah dan kelas</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
                             <h3>Statistik Sekolah</h3>
                         </div>
                         <div class="card-body">
@@ -2034,22 +2062,6 @@
                                 <div id="chartKelasWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden;">
                                     <canvas id="chartKelas"></canvas>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Aksi Cepat</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="action-buttons">
-                                <button id="btnResetStatus" class="btn btn-warning">
-                                    <i class="fas fa-redo"></i> Reset Semua Status
-                                </button>
-                                <button id="btnRefresh" class="btn btn-secondary">
-                                    <i class="fas fa-sync-alt"></i> Refresh
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -2749,6 +2761,7 @@
             const titles = {
                 'dashboard': 'Dashboard',
                 'siswa': 'Data Siswa',
+                'statistik': 'Statistik',
                 'log': 'Log Aktivitas',
                 'setting': 'Setting'
             };
@@ -2760,6 +2773,8 @@
                 loadDashboard();
             } else if (page === 'siswa') {
                 loadSiswa();
+            } else if (page === 'statistik') {
+                loadCharts();
             } else if (page === 'log') {
                 loadLogs();
             } else if (page === 'setting') {
@@ -2798,8 +2813,6 @@
 
                     const progress = data.total > 0 ? Math.round((data.terkirim / data.total) * 100) : 0;
                     document.getElementById('progress').textContent = progress + '%';
-
-                    loadCharts();
                 }
             } catch (error) {
                 showAlert('Error loading dashboard', 'danger');
