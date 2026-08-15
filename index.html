@@ -380,26 +380,30 @@
 
         .login-input-wrap {
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
-        .login-input-wrap i {
+        .login-input-wrap i:not(.login-toggle-pass i) {
             position: absolute;
-            left: 14px;
+            left: 13px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--gray);
-            font-size: 14px;
+            color: #cbd5e0;
+            font-size: 15px;
             transition: color 0.2s ease;
             pointer-events: none;
+            z-index: 1;
         }
 
         .login-input-wrap input {
+            width: 100%;
             padding: 12px 14px 12px 40px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #fbfbfb;
             font-size: 14px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .login-input-wrap input:focus {
@@ -408,31 +412,39 @@
             box-shadow: 0 0 0 4px rgba(227, 27, 35, 0.10);
         }
 
-        .login-input-wrap input:focus + i,
-        .login-input-wrap input:focus ~ i {
+        .login-input-wrap input:focus ~ i:not(.login-toggle-pass i) {
             color: var(--primary);
         }
 
-        #password.login-has-toggle,
         .login-input-wrap input#password {
             padding-right: 40px;
         }
 
         .login-toggle-pass {
             position: absolute;
-            right: 12px;
+            right: 11px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--gray);
-            font-size: 14px;
+            color: #cbd5e0;
+            font-size: 15px;
             cursor: pointer;
-            padding: 4px;
+            padding: 5px 6px;
+            transition: all 0.2s ease;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .login-toggle-pass:hover {
             color: var(--primary);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .login-toggle-pass:active {
+            transform: translateY(-50%) scale(0.95);
         }
 
         .btn-login-submit {
@@ -3056,13 +3068,23 @@
         // LOGIN
         // =====================================
 
-        document.getElementById('btnTogglePassword').addEventListener('click', () => {
+        document.getElementById('btnTogglePassword').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const passInput = document.getElementById('password');
             const icon = document.getElementById('iconTogglePassword');
             const isHidden = passInput.type === 'password';
+            
             passInput.type = isHidden ? 'text' : 'password';
-            icon.classList.toggle('fa-eye', !isHidden);
-            icon.classList.toggle('fa-eye-slash', isHidden);
+            
+            if (isHidden) {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         });
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
