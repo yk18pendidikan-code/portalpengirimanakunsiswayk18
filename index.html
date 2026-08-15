@@ -2130,6 +2130,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>ID</th>
                                     <th>Nama</th>
                                     <th>Kelas</th>
                                     <th>Sekolah</th>
@@ -2141,7 +2142,7 @@
                             </thead>
                             <tbody id="siswaTableBody">
                                 <tr>
-                                    <td colspan="8" class="text-center">Memuat data...</td>
+                                    <td colspan="9" class="text-center">Memuat data...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -2380,6 +2381,10 @@
 
                     <!-- TABEL INFO AKUN -->
                     <div class="card-body-preview">
+                        <div class="preview-item">
+                            <span class="label">ID Siswa</span>
+                            <span id="previewId" class="value">-</span>
+                        </div>
                         <div class="preview-item">
                             <span class="label">Sekolah</span>
                             <span id="previewSekolah" class="value">-</span>
@@ -3155,13 +3160,14 @@
             const paginatedData = filteredSiswa.slice(start, end);
 
             if (paginatedData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
                 return;
             }
 
             tbody.innerHTML = paginatedData.map((siswa, index) => `
                 <tr>
                     <td data-label="no">${start + index + 1}</td>
+                    <td data-label="id">${siswa.id}</td>
                     <td data-label="nama">${siswa.nama}</td>
                     <td data-label="kelas">${siswa.kelas}</td>
                     <td data-label="sekolah">${siswa.sekolah}</td>
@@ -3228,7 +3234,8 @@
                 const matchSearch = siswa.nama.toLowerCase().includes(search) ||
                                   siswa.kelas.toLowerCase().includes(search) ||
                                   siswa.sekolah.toLowerCase().includes(search) ||
-                                  siswa.username.toLowerCase().includes(search);
+                                  siswa.username.toLowerCase().includes(search) ||
+                                  String(siswa.id).toLowerCase().includes(search);
 
                 const matchKelas = !kelas || siswa.kelas === kelas;
                 const matchSekolah = !sekolah || siswa.sekolah === sekolah;
@@ -3371,6 +3378,7 @@
                     const siswa = result.data;
                     document.getElementById('previewNama').textContent = siswa.nama;
                     document.getElementById('previewKelas').textContent = siswa.kelas;
+                    document.getElementById('previewId').textContent = siswa.id;
                     document.getElementById('previewSekolah').textContent = siswa.sekolah;
                     document.getElementById('previewUsername').textContent = siswa.username;
                     document.getElementById('previewPassword').textContent = siswa.password;
