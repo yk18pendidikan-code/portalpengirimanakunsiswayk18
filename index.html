@@ -396,9 +396,14 @@
             z-index: 1;
         }
 
-        .login-input-wrap input {
+        /* FIX: selector dinaikkan spesifisitasnya (+[type]) supaya TIDAK
+           ditimpa oleh aturan umum input[type="text"], dst. yang muncul
+           lebih belakang di stylesheet ini. Sebelumnya padding-left 40px
+           di sini kalah oleh padding 9px 11px pada aturan umum, sehingga
+           ikon (posisi left:13px) menumpuk dengan teks placeholder. */
+        .login-input-wrap input[type] {
             width: 100%;
-            padding: 12px 14px 12px 40px;
+            padding: 12px 14px 12px 40px !important;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             background: #fbfbfb;
@@ -417,7 +422,7 @@
         }
 
         .login-input-wrap input#password {
-            padding-right: 40px;
+            padding-right: 40px !important;
         }
 
         .login-toggle-pass {
