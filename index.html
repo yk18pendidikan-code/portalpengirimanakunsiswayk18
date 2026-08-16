@@ -3,27 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        // PENTING UNTUK MOBILE:
-        // Google Apps Script Web App membungkus halaman ini di dalam iframe
-        // tersembunyi (parent-nya ada di script.google.com, isinya di
-        // googleusercontent.com). Akibatnya <meta name="viewport"> di bawah
-        // ini TIDAK dipakai oleh browser mobile (browser pakai viewport
-        // punya halaman TERLUAR yang tidak kita kontrol), sehingga halaman
-        // dirender selebar desktop lalu di-shrink paksa supaya muat di layar
-        // HP -> semua jadi kecil dan CSS mobile (@media) tidak pernah aktif.
-        //
-        // Fix: kalau terdeteksi berjalan di dalam iframe (window.top !==
-        // window.self), langsung arahkan window PALING LUAR ke alamat asli
-        // konten ini (window.self.location.href), supaya halaman ini jadi
-        // dokumen utama dan viewport meta di bawah benar-benar berlaku.
         try {
             if (window.top !== window.self) {
                 window.top.location.href = window.self.location.href;
             }
-        } catch (e) {
-            // Diamkan kalau browser memblokir akses cross-origin ke window.top;
-            // di sebagian besar kasus perintah di atas tetap berhasil jalan.
-        }
+        } catch (e) {}
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
@@ -33,7 +17,6 @@
     <title>Portal Akun Siswa - Neutron Murangan</title>
     <link rel="icon" type="image/png" href="https://career.amikom.ac.id/images/company/cover/1720853154.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         * {
             margin: 0;
@@ -2168,38 +2151,31 @@
         <p>Loading...</p>
     </div>
 
-    <!-- LOGIN PAGE -->
+    <!-- LOGIN PAGE (tidak berubah dari versi asli) -->
     <div id="loginPage" class="page active">
         <div class="login-container">
             <div class="login-box">
-
-                <!-- PANEL KIRI: BRANDING (disembunyikan di layar sempit) -->
                 <div class="login-brand-panel">
                     <div class="brand-panel-top">
                         <img src="https://tosbmptn15ub.weebly.com/uploads/4/6/1/4/46146887/929305838.png" alt="Neutron">
                         <span>Portal Akun Siswa<br>Neutron Murangan</span>
                     </div>
-
                     <div class="brand-panel-mid">
                         <h2>Kelola &amp; kirim akun<br>siswa lebih cepat.</h2>
                         <p>Satu portal untuk mengatur data siswa, memantau status pengiriman akun, dan membagikan akun ke WhatsApp hanya dalam beberapa klik.</p>
                     </div>
-
                     <ul class="brand-panel-features">
                         <li><i class="fas fa-users"></i> Kelola data siswa terpusat</li>
                         <li><i class="fab fa-whatsapp"></i> Kirim akun langsung ke WhatsApp</li>
                         <li><i class="fas fa-chart-pie"></i> Pantau statistik pengiriman</li>
                     </ul>
                 </div>
-
-                <!-- PANEL KANAN: FORM LOGIN -->
                 <div class="login-form-panel">
                     <div class="login-header">
                         <img src="https://tosbmptn15ub.weebly.com/uploads/4/6/1/4/46146887/929305838.png" alt="Logo Neutron" class="login-logo">
                         <h1>Selamat Datang</h1>
                         <p>Masuk untuk mengelola Portal Akun Siswa</p>
                     </div>
-
                     <form id="loginForm" class="login-form">
                         <div class="form-group">
                             <label for="username">Username</label>
@@ -2208,7 +2184,6 @@
                                 <input type="text" id="username" name="username" placeholder="Masukkan username" autocomplete="username" required>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label for="password">Password</label>
                             <div class="login-input-wrap">
@@ -2219,17 +2194,13 @@
                                 </button>
                             </div>
                         </div>
-
                         <button type="submit" class="btn btn-primary btn-block btn-login-submit">
                             <i class="fas fa-sign-in-alt"></i> Masuk
                         </button>
                     </form>
-
                     <div id="loginError" class="alert alert-danger" style="display: none;"></div>
-
                     <p class="login-footer-note">&copy; Neutron Murangan &middot; Portal Akun Siswa</p>
                 </div>
-
             </div>
         </div>
     </div>
@@ -2237,7 +2208,6 @@
     <!-- MAIN APP -->
     <div id="mainApp" style="display: none;">
 
-        <!-- OVERLAY BACKDROP (MOBILE) -->
         <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
         <!-- SIDEBAR -->
@@ -2268,7 +2238,17 @@
                     <i class="fas fa-chart-pie"></i>
                     <span>Statistik Kelas</span>
                 </a>
-                <a href="#" class="menu-item" data-page="setting">
+                <!-- BARU: menu Log Aktivitas. Halaman page-log sebelumnya
+                     sudah ada di index.html asli tapi belum ada link menu
+                     ke sana. Menu ini disembunyikan otomatis untuk role
+                     "Admin" biasa lewat applyRolePermissions() di bawah. -->
+                <a href="#" class="menu-item" data-page="log" data-role="superadmin">
+                    <i class="fas fa-history"></i>
+                    <span>Log Aktivitas</span>
+                </a>
+                <!-- Setting ditandai data-role="superadmin" supaya bisa
+                     disembunyikan otomatis untuk role "Admin" biasa. -->
+                <a href="#" class="menu-item" data-page="setting" data-role="superadmin">
                     <i class="fas fa-cog"></i>
                     <span>Setting</span>
                 </a>
@@ -2292,8 +2272,6 @@
 
         <!-- MAIN CONTENT -->
         <main class="main-content">
-
-            <!-- HEADER -->
             <header class="top-header">
                 <div class="header-left">
                     <button class="btn-toggle-sidebar-mobile" id="btnToggleSidebarMobile" title="Tampilkan/Sembunyikan Sidebar">
@@ -2303,7 +2281,6 @@
                 </div>
             </header>
 
-            <!-- PAGES CONTAINER -->
             <div class="pages-container">
 
                 <!-- DASHBOARD PAGE -->
@@ -2315,39 +2292,28 @@
 
                     <div class="dashboard-grid">
                         <div class="card card-stat">
-                            <div class="stat-icon stat-icon-blue">
-                                <i class="fas fa-users"></i>
-                            </div>
+                            <div class="stat-icon stat-icon-blue"><i class="fas fa-users"></i></div>
                             <div class="stat-content">
                                 <p class="stat-label">Total Siswa</p>
                                 <h3 id="totalSiswa" class="stat-value">0</h3>
                             </div>
                         </div>
-
                         <div class="card card-stat">
-                            <div class="stat-icon stat-icon-green">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
+                            <div class="stat-icon stat-icon-green"><i class="fas fa-check-circle"></i></div>
                             <div class="stat-content">
                                 <p class="stat-label">Sudah Terkirim</p>
                                 <h3 id="terkirim" class="stat-value">0</h3>
                             </div>
                         </div>
-
                         <div class="card card-stat">
-                            <div class="stat-icon stat-icon-orange">
-                                <i class="fas fa-hourglass-half"></i>
-                            </div>
+                            <div class="stat-icon stat-icon-orange"><i class="fas fa-hourglass-half"></i></div>
                             <div class="stat-content">
                                 <p class="stat-label">Belum Terkirim</p>
                                 <h3 id="belum" class="stat-value">0</h3>
                             </div>
                         </div>
-
                         <div class="card card-stat">
-                            <div class="stat-icon stat-icon-purple">
-                                <i class="fas fa-percentage"></i>
-                            </div>
+                            <div class="stat-icon stat-icon-purple"><i class="fas fa-percentage"></i></div>
                             <div class="stat-content">
                                 <p class="stat-label">Progress</p>
                                 <h3 id="progress" class="stat-value">0%</h3>
@@ -2356,12 +2322,12 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
-                            <h3>Aksi Cepat</h3>
-                        </div>
+                        <div class="card-header"><h3>Aksi Cepat</h3></div>
                         <div class="card-body">
                             <div class="action-buttons">
-                                <button id="btnResetStatus" class="btn btn-warning">
+                                <!-- data-role="superadmin": tombol ini disembunyikan
+                                     otomatis untuk role Admin biasa -->
+                                <button id="btnResetStatus" class="btn btn-warning" data-role="superadmin">
                                     <i class="fas fa-redo"></i> Reset Semua Status
                                 </button>
                                 <button id="btnRefresh" class="btn btn-secondary">
@@ -2378,13 +2344,10 @@
                         <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Statistik sebaran siswa per sekolah</p>
                     </div>
-
                     <div class="card">
                         <div class="card-header">
                             <h3>Statistik Sekolah</h3>
-                            <button class="btn-icon" id="btnRefreshStatistikSekolah" title="Refresh data">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                            <button class="btn-icon" id="btnRefreshStatistikSekolah" title="Refresh data"><i class="fas fa-sync-alt"></i></button>
                         </div>
                         <div class="card-body">
                             <div id="chartSekolahWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden; transition: opacity 0.2s ease;">
@@ -2400,13 +2363,10 @@
                         <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Statistik sebaran siswa per kelas</p>
                     </div>
-
                     <div class="card">
                         <div class="card-header">
                             <h3>Statistik Kelas</h3>
-                            <button class="btn-icon" id="btnRefreshStatistikKelas" title="Refresh data">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                            <button class="btn-icon" id="btnRefreshStatistikKelas" title="Refresh data"><i class="fas fa-sync-alt"></i></button>
                         </div>
                         <div class="card-body">
                             <div id="chartKelasWrapper" style="position: relative; width: 100%; overflow-y: auto; overflow-x: hidden; transition: opacity 0.2s ease;">
@@ -2430,20 +2390,14 @@
                                     <input type="text" id="siswaSearch" placeholder="Cari nama, No. Induk, kelas, sekolah...">
                                     <i class="fas fa-search"></i>
                                 </div>
-                                <select id="filterKelas" class="select-filter">
-                                    <option value="">Semua Kelas</option>
-                                </select>
-                                <select id="filterSekolah" class="select-filter">
-                                    <option value="">Semua Sekolah</option>
-                                </select>
+                                <select id="filterKelas" class="select-filter"><option value="">Semua Kelas</option></select>
+                                <select id="filterSekolah" class="select-filter"><option value="">Semua Sekolah</option></select>
                                 <select id="filterStatus" class="select-filter">
                                     <option value="">Semua Status</option>
                                     <option value="TERKIRIM">Terkirim</option>
                                     <option value="BELUM">Belum</option>
                                 </select>
-                                <button id="btnClearFilter" class="btn btn-secondary">
-                                    <i class="fas fa-times"></i> Clear
-                                </button>
+                                <button id="btnClearFilter" class="btn btn-secondary"><i class="fas fa-times"></i> Clear</button>
                             </div>
                         </div>
                     </div>
@@ -2451,9 +2405,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="toolbar">
-                                <button id="btnTambahSiswa" class="btn btn-primary">
-                                    <i class="fas fa-plus"></i> Tambah Siswa
-                                </button>
+                                <button id="btnTambahSiswa" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Siswa</button>
                             </div>
                         </div>
                     </div>
@@ -2462,22 +2414,12 @@
                         <table id="siswaTable" class="data-table">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nomor Induk Neutron</th>
-                                    <th>Nama</th>
-                                    <th>Kelas</th>
-                                    <th>Sekolah</th>
-                                    <th>Username</th>
-                                    <th>WhatsApp</th>
-                                    <th>Status Pengiriman</th>
-                                    <th>Aksi</th>
+                                    <th>No</th><th>Nomor Induk Neutron</th><th>Nama</th><th>Kelas</th>
+                                    <th>Sekolah</th><th>Username</th><th>WhatsApp</th>
+                                    <th>Status Pengiriman</th><th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="siswaTableBody">
-                                <tr>
-                                    <td colspan="9" class="text-center">Memuat data...</td>
-                                </tr>
-                            </tbody>
+                            <tbody id="siswaTableBody"><tr><td colspan="9" class="text-center">Memuat data...</td></tr></tbody>
                         </table>
                     </div>
 
@@ -2488,13 +2430,12 @@
                     </div>
                 </div>
 
-                <!-- LOG PAGE -->
+                <!-- LOG PAGE (khusus Super Admin) -->
                 <div id="page-log" class="page-content">
                     <div class="page-header">
                         <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Riwayat semua aktivitas admin</p>
                     </div>
-
                     <div class="card">
                         <div class="card-body">
                             <div class="filter-group">
@@ -2512,34 +2453,19 @@
                                     <option value="RESET PASSWORD">Reset Password</option>
                                     <option value="RESET STATUS">Reset Status</option>
                                 </select>
-                                <button id="btnExportLog" class="btn btn-info">
-                                    <i class="fas fa-download"></i> Export
-                                </button>
+                                <button id="btnExportLog" class="btn btn-info"><i class="fas fa-download"></i> Export</button>
                             </div>
                         </div>
                     </div>
-
                     <div class="card table-responsive">
                         <table id="logTable" class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Waktu</th>
-                                    <th>Admin</th>
-                                    <th>Aktivitas</th>
-                                    <th>Target</th>
-                                </tr>
-                            </thead>
-                            <tbody id="logTableBody">
-                                <tr>
-                                    <td colspan="5" class="text-center">Memuat data...</td>
-                                </tr>
-                            </tbody>
+                            <thead><tr><th>No</th><th>Waktu</th><th>Admin</th><th>Aktivitas</th><th>Target</th></tr></thead>
+                            <tbody id="logTableBody"><tr><td colspan="5" class="text-center">Memuat data...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- SETTING PAGE -->
+                <!-- SETTING PAGE (khusus Super Admin, kecuali form ganti password sendiri) -->
                 <div id="page-setting" class="page-content">
                     <div class="page-header">
                         <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
@@ -2547,67 +2473,34 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
-                            <h3>Pengaturan Aplikasi</h3>
-                        </div>
+                        <div class="card-header"><h3>Pengaturan Aplikasi</h3></div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label>Nama Bimbel</label>
-                                <input type="text" id="settingNamaBimbel" placeholder="Nama bimbel">
-                            </div>
-                            <div class="form-group">
-                                <label>Alamat</label>
-                                <input type="text" id="settingAlamat" placeholder="Alamat">
-                            </div>
-                            <div class="form-group">
-                                <label>Telepon</label>
-                                <input type="text" id="settingTelepon" placeholder="Nomor telepon">
-                            </div>
-                            <div class="form-group">
-                                <label>Link Login Siswa</label>
-                                <input type="text" id="settingLinkLogin" placeholder="https://siswa.contoh.co.id/">
-                            </div>
-                            <div class="form-group">
-                                <label>Footer</label>
-                                <input type="text" id="settingFooter" placeholder="Teks footer pesan WhatsApp">
-                            </div>
-                            <button id="btnSaveSetting" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Simpan
-                            </button>
+                            <div class="form-group"><label>Nama Bimbel</label><input type="text" id="settingNamaBimbel" placeholder="Nama bimbel"></div>
+                            <div class="form-group"><label>Alamat</label><input type="text" id="settingAlamat" placeholder="Alamat"></div>
+                            <div class="form-group"><label>Telepon</label><input type="text" id="settingTelepon" placeholder="Nomor telepon"></div>
+                            <div class="form-group"><label>Link Login Siswa</label><input type="text" id="settingLinkLogin" placeholder="https://siswa.contoh.co.id/"></div>
+                            <div class="form-group"><label>Footer</label><input type="text" id="settingFooter" placeholder="Teks footer pesan WhatsApp"></div>
+                            <button id="btnSaveSetting" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
-                            <h3>Ganti Password Admin</h3>
-                        </div>
+                        <div class="card-header"><h3>Ganti Password Admin</h3></div>
                         <div class="card-body">
                             <form id="formGantiPassword">
-                                <div class="form-group">
-                                    <label>Password Baru</label>
-                                    <input type="password" id="passwordBaru" placeholder="Password baru" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Konfirmasi Password</label>
-                                    <input type="password" id="passwordKonfirmasi" placeholder="Konfirmasi password" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-lock"></i> Ganti Password
-                                </button>
+                                <div class="form-group"><label>Password Baru</label><input type="password" id="passwordBaru" placeholder="Password baru" required></div>
+                                <div class="form-group"><label>Konfirmasi Password</label><input type="password" id="passwordKonfirmasi" placeholder="Konfirmasi password" required></div>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-lock"></i> Ganti Password</button>
                             </form>
                         </div>
                     </div>
                 </div>
 
             </div>
-
         </main>
-
     </div>
 
     <!-- MODALS -->
-
-    <!-- Modal Tambah/Edit Siswa -->
     <div id="modalSiswa" class="modal">
         <div class="modal-content modal-lg">
             <div class="modal-header">
@@ -2622,50 +2515,30 @@
                             <input type="text" id="siswaIdInput" placeholder="Isi manual, mis: 2024001 (harus SAMA PERSIS dengan ID di kolom A spreadsheet)" required>
                         </div>
                     </div>
-
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Nama Siswa <span class="required">*</span></label>
-                            <input type="text" id="siswanama" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Kelas <span class="required">*</span></label>
-                            <input type="text" id="siswakelas" required>
-                        </div>
+                        <div class="form-group"><label>Nama Siswa <span class="required">*</span></label><input type="text" id="siswanama" required></div>
+                        <div class="form-group"><label>Kelas <span class="required">*</span></label><input type="text" id="siswakelas" required></div>
                     </div>
-
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Sekolah <span class="required">*</span></label>
-                            <input type="text" id="siswasekolah" required>
-                        </div>
-                        <div class="form-group">
-                            <label>No WhatsApp <span class="required">*</span></label>
-                            <input type="text" id="siswawa" placeholder="08xxxxxx" required>
-                        </div>
+                        <div class="form-group"><label>Sekolah <span class="required">*</span></label><input type="text" id="siswasekolah" required></div>
+                        <div class="form-group"><label>No WhatsApp <span class="required">*</span></label><input type="text" id="siswawa" placeholder="08xxxxxx" required></div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label>Username <span class="required">*</span></label>
                             <div class="input-group">
                                 <input type="text" id="siswausername" required>
-                                <button type="button" class="btn btn-secondary" id="btnGenerateUsername">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
+                                <button type="button" class="btn btn-secondary" id="btnGenerateUsername"><i class="fas fa-sync-alt"></i></button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Password <span class="required">*</span></label>
                             <div class="input-group">
                                 <input type="text" id="siswapassword" required>
-                                <button type="button" class="btn btn-secondary" id="btnGeneratePassword">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
+                                <button type="button" class="btn btn-secondary" id="btnGeneratePassword"><i class="fas fa-sync-alt"></i></button>
                             </div>
                         </div>
                     </div>
-
                     <input type="hidden" id="siswaId">
                     <input type="hidden" id="siswaRow">
                 </form>
@@ -2677,7 +2550,6 @@
         </div>
     </div>
 
-    <!-- Modal Preview Akun -->
     <div id="modalPreview" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -2686,20 +2558,13 @@
             </div>
             <div class="modal-body">
                 <div id="previewCard" class="account-card">
-
-                    <!-- HEADER BAND: logo + nama brand -->
                     <div class="preview-header-band">
-                        <img src="https://tosbmptn15ub.weebly.com/uploads/4/6/1/4/46146887/929305838.png"
-                             alt="Neutron"
-                             crossorigin="anonymous"
-                             class="preview-logo">
+                        <img src="https://tosbmptn15ub.weebly.com/uploads/4/6/1/4/46146887/929305838.png" alt="Neutron" crossorigin="anonymous" class="preview-logo">
                         <div class="preview-brand">
                             <span class="brand-title">Kartu Akun Siswa</span>
                             <span class="brand-sub">Neutron Murangan</span>
                         </div>
                     </div>
-
-                    <!-- STRIP IDENTITAS: avatar inisial + nama + kelas -->
                     <div class="preview-identity">
                         <div id="previewAvatar" class="preview-avatar">
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2711,59 +2576,31 @@
                             <span id="previewKelas">Kelas</span>
                         </div>
                     </div>
-
-                    <!-- TABEL INFO AKUN -->
                     <div class="card-body-preview">
-                        <div class="preview-item">
-                            <span class="label">Nomor Induk Neutron</span>
-                            <span id="previewId" class="value">-</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">Sekolah</span>
-                            <span id="previewSekolah" class="value">-</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">Username</span>
-                            <span id="previewUsername" class="value">-</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">Password</span>
-                            <span id="previewPassword" class="value">-</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">WhatsApp</span>
-                            <span id="previewWA" class="value">-</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">Status</span>
-                            <span id="previewStatus">-</span>
-                        </div>
+                        <div class="preview-item"><span class="label">Nomor Induk Neutron</span><span id="previewId" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Sekolah</span><span id="previewSekolah" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Username</span><span id="previewUsername" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Password</span><span id="previewPassword" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">WhatsApp</span><span id="previewWA" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Status</span><span id="previewStatus">-</span></div>
                     </div>
-
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" id="btnDownloadPNG">
-                    <i class="fas fa-image"></i> Download PNG
-                </button>
-                <button class="btn btn-primary" id="btnKirimWhatsapp">
-                    <i class="fab fa-whatsapp"></i> Kirim WhatsApp
-                </button>
+                <button class="btn btn-success" id="btnDownloadPNG"><i class="fas fa-image"></i> Download PNG</button>
+                <button class="btn btn-primary" id="btnKirimWhatsapp"><i class="fab fa-whatsapp"></i> Kirim WhatsApp</button>
                 <button class="btn btn-secondary" data-modal="modalPreview">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
     <div id="modalHapus" class="modal">
         <div class="modal-content modal-sm">
             <div class="modal-header">
                 <h2>Konfirmasi Hapus</h2>
                 <button class="btn-close" data-modal="modalHapus">&times;</button>
             </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus data siswa ini?</p>
-            </div>
+            <div class="modal-body"><p>Apakah Anda yakin ingin menghapus data siswa ini?</p></div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-modal="modalHapus">Batal</button>
                 <button class="btn btn-danger" id="btnConfirmHapus">Hapus</button>
@@ -2772,10 +2609,7 @@
         </div>
     </div>
 
-    <!-- Alert Toast -->
     <div id="alertContainer" class="alert-container"></div>
-
-    <!-- WATERMARK PALING BAWAH HALAMAN -->
     <div class="app-watermark">Created by Neutron Murangan</div>
 
     <!-- SCRIPTS -->
@@ -2785,9 +2619,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
 
     <script>
-        // =====================================
-        // PENGAMAN VIEWPORT UNTUK WEBVIEW
-        // =====================================
         (function forceViewport() {
             function setViewport() {
                 let meta = document.querySelector('meta[name="viewport"]');
@@ -2796,41 +2627,17 @@
                     meta.name = 'viewport';
                     document.head.appendChild(meta);
                 }
-                meta.setAttribute(
-                    'content',
-                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
-                );
+                meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
             }
-
             setViewport();
-
             window.addEventListener('load', setViewport);
-            window.addEventListener('orientationchange', () => {
-                setTimeout(setViewport, 300);
-            });
+            window.addEventListener('orientationchange', () => { setTimeout(setViewport, 300); });
         })();
 
-        // =====================================
-        // EMOJI UNTUK NOTIFIKASI (TOAST)
-        // =====================================
-        // PENTING: emoji di bawah ini DITULIS PAKAI KODE UNICODE
-        // (\u{...}), BUKAN karakter emoji langsung. Ini pola yang
-        // SAMA dengan yang sudah dipakai di Code.gs.
-        //
-        // Sebelumnya emoji-emoji ini (checkmark, silang, peringatan) ditulis
-        // LANGSUNG sebagai karakter di dalam kode showAlert(...) tersebar
-        // di berbagai tempat. Karakter emoji yang ditulis langsung seperti
-        // itu rawan RUSAK jadi tanda tanya "?" kalau file ini pernah
-        // disimpan/disalin-tempel lewat editor, git, atau proses lain
-        // yang tidak sepenuhnya UTF-8 aman untuk karakter di luar
-        // ASCII. Kode escape \u{...} di bawah ini AMAN dari masalah
-        // itu karena hanya terdiri dari huruf & angka ASCII biasa,
-        // dan browser akan selalu merakitnya kembali jadi emoji yang
-        // benar saat kode dijalankan.
         const EMO_ALERT = {
-            check:   '\u{2705}',        // check (dipakai untuk pesan sukses)
-            cross:   '\u{274C}',        // cross (dipakai untuk pesan gagal/error)
-            warning: '\u{26A0}\u{FE0F}' // warning (dipakai untuk pesan peringatan)
+            check:   '\u{2705}',
+            cross:   '\u{274C}',
+            warning: '\u{26A0}\u{FE0F}'
         };
 
         // =====================================
@@ -2843,28 +2650,51 @@
         const itemsPerPage = 10;
         let charts = {};
 
-        // Cache data statistik supaya buka menu Statistik Sekolah/Kelas
-        // tidak perlu menunggu request API lagi setiap kali (data langsung
-        // ditampilkan dari cache, lalu diperbarui diam-diam di belakang layar)
         let statistikSekolahData = null;
         let statistikKelasData = null;
 
-        // Durasi sesi sebelum auto logout (dalam milidetik)
-        // 8 jam = 8 * 60 * 60 * 1000
         const SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
         let autoLogoutTimer = null;
+
+        // =====================================
+        // ROLE HELPER (BARU)
+        // =====================================
+        // Menormalkan string role dari server ("Super Admin",
+        // "SUPERADMIN", dst.) supaya bisa dibandingkan dengan aman.
+        function normalizeRole(role) {
+            return String(role || '').toUpperCase().replace(/[\s_-]/g, '');
+        }
+
+        function isSuperAdmin() {
+            return !!currentUser && normalizeRole(currentUser.role) === 'SUPERADMIN';
+        }
+
+        // Menampilkan/menyembunyikan semua elemen ber-atribut
+        // data-role="superadmin" sesuai role user yang sedang login.
+        // Dipanggil setiap kali user login / sesi dipulihkan.
+        function applyRolePermissions() {
+            const superAdmin = isSuperAdmin();
+
+            document.querySelectorAll('[data-role="superadmin"]').forEach(el => {
+                el.style.display = superAdmin ? '' : 'none';
+            });
+
+            // Kalau halaman yang sedang aktif ternyata khusus Super Admin
+            // tapi user-nya Admin biasa (mis. karena localStorage
+            // portalLastPage menyimpan halaman itu dari sesi sebelumnya),
+            // alihkan otomatis ke Dashboard.
+            const lastPage = localStorage.getItem('portalLastPage') || 'dashboard';
+            if (!superAdmin && (lastPage === 'setting' || lastPage === 'log')) {
+                localStorage.setItem('portalLastPage', 'dashboard');
+            }
+        }
 
         // =====================================
         // UTILITY FUNCTIONS
         // =====================================
 
-        function showLoading() {
-            document.getElementById('loading').classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            document.getElementById('loading').classList.add('hidden');
-        }
+        function showLoading() { document.getElementById('loading').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loading').classList.add('hidden'); }
 
         function showAlert(message, type = 'info') {
             const container = document.getElementById('alertContainer');
@@ -2872,19 +2702,11 @@
             toast.className = `toast ${type}`;
             toast.textContent = message;
             container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
+            setTimeout(() => { toast.remove(); }, 3000);
         }
 
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
+        function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
 
         // =====================================
         // API CALLS
@@ -2913,12 +2735,10 @@
         }
 
         // =====================================
-        // SIDEBAR TOGGLE (UNIVERSAL: DESKTOP & MOBILE)
+        // SIDEBAR TOGGLE
         // =====================================
 
-        function isMobileView() {
-            return window.innerWidth <= 768;
-        }
+        function isMobileView() { return window.innerWidth <= 768; }
 
         function toggleSidebar() {
             if (isMobileView()) {
@@ -2935,87 +2755,52 @@
         }
 
         document.getElementById('btnToggleSidebarMobile').addEventListener('click', toggleSidebar);
-
-        document.getElementById('btnToggleSidebar').addEventListener('click', () => {
-            closeSidebarMobile();
-        });
-
-        document.getElementById('sidebarOverlay').addEventListener('click', () => {
-            closeSidebarMobile();
-        });
+        document.getElementById('btnToggleSidebar').addEventListener('click', () => { closeSidebarMobile(); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { closeSidebarMobile(); });
 
         // =====================================
         // SESSION (LOGIN STATE) HANDLING
         // =====================================
 
         function saveSession(userData) {
-            const session = {
-                user: userData,
-                loginAt: Date.now()
-            };
+            const session = { user: userData, loginAt: Date.now() };
             localStorage.setItem('portalSession', JSON.stringify(session));
         }
 
         function getSession() {
             const raw = localStorage.getItem('portalSession');
             if (!raw) return null;
-
             try {
                 const session = JSON.parse(raw);
                 const elapsed = Date.now() - session.loginAt;
-
-                if (elapsed >= SESSION_DURATION_MS) {
-                    clearSession();
-                    return null;
-                }
-
+                if (elapsed >= SESSION_DURATION_MS) { clearSession(); return null; }
                 return session;
-            } catch (e) {
-                clearSession();
-                return null;
-            }
+            } catch (e) { clearSession(); return null; }
         }
 
         function clearSession() {
             localStorage.removeItem('portalSession');
             localStorage.removeItem('portalLastPage');
-            if (autoLogoutTimer) {
-                clearTimeout(autoLogoutTimer);
-                autoLogoutTimer = null;
-            }
+            if (autoLogoutTimer) { clearTimeout(autoLogoutTimer); autoLogoutTimer = null; }
         }
 
         function scheduleAutoLogout(loginAt) {
-            if (autoLogoutTimer) {
-                clearTimeout(autoLogoutTimer);
-            }
-
+            if (autoLogoutTimer) { clearTimeout(autoLogoutTimer); }
             const elapsed = Date.now() - loginAt;
             const remaining = SESSION_DURATION_MS - elapsed;
-
-            if (remaining <= 0) {
-                doLogout(true);
-                return;
-            }
-
-            autoLogoutTimer = setTimeout(() => {
-                doLogout(true);
-            }, remaining);
+            if (remaining <= 0) { doLogout(true); return; }
+            autoLogoutTimer = setTimeout(() => { doLogout(true); }, remaining);
         }
 
         function doLogout(isAuto) {
             clearSession();
-
             document.getElementById('mainApp').style.display = 'none';
             document.getElementById('mainApp').classList.remove('sidebar-hidden');
             document.getElementById('loginPage').classList.add('active');
             document.getElementById('loginForm').reset();
             document.getElementById('loginError').style.display = 'none';
             currentUser = null;
-
-            if (isAuto) {
-                showAlert('Sesi Anda telah berakhir, silakan login kembali', 'warning');
-            }
+            if (isAuto) { showAlert('Sesi Anda telah berakhir, silakan login kembali', 'warning'); }
         }
 
         function showMainApp(userData) {
@@ -3024,50 +2809,42 @@
             document.getElementById('loginPage').classList.remove('active');
             document.getElementById('mainApp').style.display = 'flex';
 
-            // Ambil data statistik di belakang layar sedini mungkin (tidak
-            // menunggu, tidak memblokir UI) supaya saat menu Statistik
-            // Sekolah/Kelas dibuka, datanya sudah siap dan langsung tampil
+            // BARU: terapkan hak akses Admin vs Super Admin ke tampilan
+            // (menyembunyikan menu/tombol yang khusus Super Admin).
+            applyRolePermissions();
+
             prefetchStatistik();
         }
 
         function prefetchStatistik() {
-            apiCall('statistikSekolah')
-                .then(result => {
-                    if (result.status) statistikSekolahData = result.data;
-                })
-                .catch(err => console.error('Prefetch statistik sekolah gagal:', err));
-
-            apiCall('statistikKelas')
-                .then(result => {
-                    if (result.status) statistikKelasData = result.data;
-                })
-                .catch(err => console.error('Prefetch statistik kelas gagal:', err));
+            apiCall('statistikSekolah').then(result => { if (result.status) statistikSekolahData = result.data; }).catch(err => console.error('Prefetch statistik sekolah gagal:', err));
+            apiCall('statistikKelas').then(result => { if (result.status) statistikKelasData = result.data; }).catch(err => console.error('Prefetch statistik kelas gagal:', err));
         }
 
         function restoreSession() {
             const session = getSession();
-
             if (session) {
                 currentUser = session.user;
                 showMainApp(currentUser);
                 scheduleAutoLogout(session.loginAt);
 
-                const lastPage = localStorage.getItem('portalLastPage') || 'dashboard';
+                let lastPage = localStorage.getItem('portalLastPage') || 'dashboard';
+                // BARU: kalau halaman terakhir yang tersimpan ternyata
+                // khusus Super Admin tapi user-nya Admin biasa, paksa
+                // kembali ke dashboard.
+                if (!isSuperAdmin() && (lastPage === 'setting' || lastPage === 'log')) {
+                    lastPage = 'dashboard';
+                }
                 goToPage(lastPage);
 
-                if (isMobileView()) {
-                    closeSidebarMobile();
-                }
+                if (isMobileView()) { closeSidebarMobile(); }
             }
         }
 
         // =====================================
         // INITIAL LOAD
         // =====================================
-        window.addEventListener('load', () => {
-            hideLoading();
-            restoreSession();
-        });
+        window.addEventListener('load', () => { hideLoading(); restoreSession(); });
 
         // =====================================
         // LOGIN
@@ -3076,20 +2853,12 @@
         document.getElementById('btnTogglePassword').addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            
             const passInput = document.getElementById('password');
             const icon = document.getElementById('iconTogglePassword');
             const isHidden = passInput.type === 'password';
-            
             passInput.type = isHidden ? 'text' : 'password';
-            
-            if (isHidden) {
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+            if (isHidden) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+            else { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
         });
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -3103,11 +2872,9 @@
 
                 if (result.status) {
                     currentUser = result.data;
-
                     saveSession(currentUser);
                     localStorage.setItem('portalLastPage', 'dashboard');
                     scheduleAutoLogout(Date.now());
-
                     showMainApp(currentUser);
                     loadDashboard();
                 } else {
@@ -3122,9 +2889,7 @@
         });
 
         document.getElementById('btnLogout').addEventListener('click', () => {
-            if (confirm('Apakah Anda yakin ingin logout?')) {
-                doLogout(false);
-            }
+            if (confirm('Apakah Anda yakin ingin logout?')) { doLogout(false); }
         });
 
         // =====================================
@@ -3134,11 +2899,19 @@
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
-                goToPage(item.dataset.page);
 
-                if (isMobileView()) {
-                    closeSidebarMobile();
+                // BARU: penjagaan tambahan di sisi klik menu. Kalau menu
+                // ini ditandai data-role="superadmin" dan user bukan
+                // Super Admin, batalkan navigasi (harusnya menu ini juga
+                // sudah disembunyikan lewat applyRolePermissions(), ini
+                // pengaman lapis kedua kalau elemen sempat terlihat).
+                if (item.dataset.role === 'superadmin' && !isSuperAdmin()) {
+                    showAlert('Akses ditolak: menu ini khusus Super Admin', 'warning');
+                    return;
                 }
+
+                goToPage(item.dataset.page);
+                if (isMobileView()) { closeSidebarMobile(); }
             });
         });
 
@@ -3149,7 +2922,12 @@
             const menuItem = document.querySelector(`.menu-item[data-page="${page}"]`);
             const pageContent = document.getElementById(`page-${page}`);
 
-            if (!menuItem || !pageContent) {
+            if (!menuItem || !pageContent) { page = 'dashboard'; }
+
+            // BARU: kalau halaman tujuan khusus Super Admin dan user
+            // bukan Super Admin, paksa ke dashboard.
+            const targetMenuItem = document.querySelector(`.menu-item[data-page="${page}"]`);
+            if (targetMenuItem && targetMenuItem.dataset.role === 'superadmin' && !isSuperAdmin()) {
                 page = 'dashboard';
             }
 
@@ -3168,33 +2946,20 @@
 
             localStorage.setItem('portalLastPage', page);
 
-            if (page === 'dashboard') {
-                loadDashboard();
-            } else if (page === 'siswa') {
-                loadSiswa();
-            } else if (page === 'statistik-sekolah') {
-                loadStatistikSekolah();
-            } else if (page === 'statistik-kelas') {
-                loadStatistikKelas();
-            } else if (page === 'log') {
-                loadLogs();
-            } else if (page === 'setting') {
-                loadSetting();
-            }
+            if (page === 'dashboard') { loadDashboard(); }
+            else if (page === 'siswa') { loadSiswa(); }
+            else if (page === 'statistik-sekolah') { loadStatistikSekolah(); }
+            else if (page === 'statistik-kelas') { loadStatistikKelas(); }
+            else if (page === 'log') { loadLogs(); }
+            else if (page === 'setting') { loadSetting(); }
         }
 
         document.querySelectorAll('.btn-close').forEach(btn => {
-            btn.addEventListener('click', () => {
-                closeModal(btn.dataset.modal);
-            });
+            btn.addEventListener('click', () => { closeModal(btn.dataset.modal); });
         });
 
         document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
+            modal.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.remove('active'); } });
         });
 
         // =====================================
@@ -3205,13 +2970,11 @@
             try {
                 showLoading();
                 const result = await apiCall('getDashboard');
-
                 if (result.status) {
                     const data = result.data;
                     document.getElementById('totalSiswa').textContent = data.total;
                     document.getElementById('terkirim').textContent = data.terkirim;
                     document.getElementById('belum').textContent = data.belum;
-
                     const progress = data.total > 0 ? Math.round((data.terkirim / data.total) * 100) : 0;
                     document.getElementById('progress').textContent = progress + '%';
                 }
@@ -3222,137 +2985,63 @@
             }
         }
 
-        function showChartLoading(wrapperId) {
-            const wrapper = document.getElementById(wrapperId);
-            if (wrapper) wrapper.style.opacity = '0.35';
-        }
-
-        function hideChartLoading(wrapperId) {
-            const wrapper = document.getElementById(wrapperId);
-            if (wrapper) wrapper.style.opacity = '1';
-        }
+        function showChartLoading(wrapperId) { const wrapper = document.getElementById(wrapperId); if (wrapper) wrapper.style.opacity = '0.35'; }
+        function hideChartLoading(wrapperId) { const wrapper = document.getElementById(wrapperId); if (wrapper) wrapper.style.opacity = '1'; }
 
         async function loadStatistikSekolah() {
-            // Kalau sudah ada data (dari cache/prefetch), langsung tampilkan
-            // dulu tanpa menunggu -> terasa instan
-            if (statistikSekolahData) {
-                renderChartSekolah(statistikSekolahData);
-            } else {
-                showChartLoading('chartSekolahWrapper');
-            }
-
+            if (statistikSekolahData) { renderChartSekolah(statistikSekolahData); }
+            else { showChartLoading('chartSekolahWrapper'); }
             try {
                 const resultSekolah = await apiCall('statistikSekolah');
-                if (resultSekolah.status) {
-                    statistikSekolahData = resultSekolah.data;
-                    renderChartSekolah(statistikSekolahData);
-                }
+                if (resultSekolah.status) { statistikSekolahData = resultSekolah.data; renderChartSekolah(statistikSekolahData); }
             } catch (error) {
-                if (!statistikSekolahData) {
-                    showAlert('Error loading statistik sekolah', 'danger');
-                }
+                if (!statistikSekolahData) { showAlert('Error loading statistik sekolah', 'danger'); }
             } finally {
                 hideChartLoading('chartSekolahWrapper');
             }
         }
 
         async function loadStatistikKelas() {
-            if (statistikKelasData) {
-                renderChartKelas(statistikKelasData);
-            } else {
-                showChartLoading('chartKelasWrapper');
-            }
-
+            if (statistikKelasData) { renderChartKelas(statistikKelasData); }
+            else { showChartLoading('chartKelasWrapper'); }
             try {
                 const resultKelas = await apiCall('statistikKelas');
-                if (resultKelas.status) {
-                    statistikKelasData = resultKelas.data;
-                    renderChartKelas(statistikKelasData);
-                }
+                if (resultKelas.status) { statistikKelasData = resultKelas.data; renderChartKelas(statistikKelasData); }
             } catch (error) {
-                if (!statistikKelasData) {
-                    showAlert('Error loading statistik kelas', 'danger');
-                }
+                if (!statistikKelasData) { showAlert('Error loading statistik kelas', 'danger'); }
             } finally {
                 hideChartLoading('chartKelasWrapper');
             }
         }
 
-        document.getElementById('btnRefreshStatistikSekolah').addEventListener('click', () => {
-            loadStatistikSekolah();
-        });
-
-        document.getElementById('btnRefreshStatistikKelas').addEventListener('click', () => {
-            loadStatistikKelas();
-        });
+        document.getElementById('btnRefreshStatistikSekolah').addEventListener('click', () => { loadStatistikSekolah(); });
+        document.getElementById('btnRefreshStatistikKelas').addEventListener('click', () => { loadStatistikKelas(); });
 
         function renderChartSekolah(data) {
             const canvas = document.getElementById('chartSekolah');
             const wrapper = document.getElementById('chartSekolahWrapper');
             const ctx = canvas.getContext('2d');
-
-            if (charts.sekolah) {
-                charts.sekolah.destroy();
-            }
+            if (charts.sekolah) { charts.sekolah.destroy(); }
 
             const sortedEntries = Object.entries(data).sort((a, b) => b[1] - a[1]);
             const labels = sortedEntries.map(entry => entry[0]);
             const values = sortedEntries.map(entry => entry[1]);
-
             const palette = ['#E31B23', '#A6121A', '#f39c12', '#7A0C12', '#2ecc71', '#3498db', '#9b59b6', '#2A0E0E'];
             const barColors = labels.map((_, i) => palette[i % palette.length]);
 
             const heightPerBar = 40;
             const minHeight = 280;
             const chartHeight = Math.max(minHeight, labels.length * heightPerBar);
-
             wrapper.style.height = chartHeight + 'px';
             canvas.style.height = chartHeight + 'px';
 
             charts.sekolah = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Jumlah Siswa',
-                        data: values,
-                        backgroundColor: barColors,
-                        borderRadius: 4,
-                        borderSkipped: false,
-                        barPercentage: 0.6,
-                        categoryPercentage: 0.7
-                    }]
-                },
+                data: { labels: labels, datasets: [{ label: 'Jumlah Siswa', data: values, backgroundColor: barColors, borderRadius: 4, borderSkipped: false, barPercentage: 0.6, categoryPercentage: 0.7 }] },
                 options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => `${context.raw} siswa`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                precision: 0,
-                                font: { size: 12 }
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                autoSkip: false,
-                                font: { size: 12 }
-                            }
-                        }
-                    }
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (context) => `${context.raw} siswa` } } },
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1, precision: 0, font: { size: 12 } } }, y: { ticks: { autoSkip: false, font: { size: 12 } } } }
                 }
             });
         }
@@ -3361,83 +3050,49 @@
             const canvas = document.getElementById('chartKelas');
             const wrapper = document.getElementById('chartKelasWrapper');
             const ctx = canvas.getContext('2d');
-
-            if (charts.kelas) {
-                charts.kelas.destroy();
-            }
+            if (charts.kelas) { charts.kelas.destroy(); }
 
             const sortedEntries = Object.entries(data).sort((a, b) => b[1] - a[1]);
             const labels = sortedEntries.map(entry => entry[0]);
             const values = sortedEntries.map(entry => entry[1]);
-
             const palette = ['#E31B23', '#A6121A', '#f39c12', '#7A0C12', '#f28b82', '#2A0E0E', '#3498db', '#2ecc71'];
             const barColors = labels.map((_, i) => palette[i % palette.length]);
 
             const heightPerBar = 26;
             const minHeight = 160;
             const chartHeight = Math.max(minHeight, labels.length * heightPerBar);
-
             wrapper.style.height = chartHeight + 'px';
             canvas.style.height = chartHeight + 'px';
 
             charts.kelas = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Jumlah Siswa',
-                        data: values,
-                        backgroundColor: barColors,
-                        borderRadius: 3,
-                        borderSkipped: false,
-                        barPercentage: 0.6,
-                        categoryPercentage: 0.7
-                    }]
-                },
+                data: { labels: labels, datasets: [{ label: 'Jumlah Siswa', data: values, backgroundColor: barColors, borderRadius: 3, borderSkipped: false, barPercentage: 0.6, categoryPercentage: 0.7 }] },
                 options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => `${context.raw} siswa`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                precision: 0,
-                                font: { size: 11 }
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                autoSkip: false,
-                                font: { size: 11 }
-                            }
-                        }
-                    }
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (context) => `${context.raw} siswa` } } },
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1, precision: 0, font: { size: 11 } } }, y: { ticks: { autoSkip: false, font: { size: 11 } } } }
                 }
             });
         }
 
+        // BARU: pengecekan role di sisi klik. Tombol ini sudah punya
+        // data-role="superadmin" dan otomatis disembunyikan lewat
+        // applyRolePermissions(), ini pengaman lapis kedua.
         document.getElementById('btnResetStatus').addEventListener('click', async () => {
+            if (!isSuperAdmin()) {
+                showAlert('Akses ditolak: fitur ini khusus Super Admin', 'warning');
+                return;
+            }
             if (confirm('Reset semua status? Data tidak akan dihapus, hanya status diubah menjadi BELUM.')) {
                 try {
                     showLoading();
-                    const result = await apiCall('resetSemuaStatus', currentUser.nama);
-
-                    if (result.status) {
-                        showAlert('Status berhasil direset', 'success');
-                        loadDashboard();
-                    }
+                    // Kirim username juga supaya server bisa verifikasi role.
+                    const result = await apiCall('resetSemuaStatus', {
+                        admin: currentUser.nama,
+                        username: currentUser.username
+                    });
+                    if (result.status) { showAlert('Status berhasil direset', 'success'); loadDashboard(); }
+                    else { showAlert(result.message, 'danger'); }
                 } catch (error) {
                     showAlert('Error: ' + error.message, 'danger');
                 } finally {
@@ -3446,9 +3101,7 @@
             }
         });
 
-        document.getElementById('btnRefresh').addEventListener('click', () => {
-            loadDashboard();
-        });
+        document.getElementById('btnRefresh').addEventListener('click', () => { loadDashboard(); });
 
         // =====================================
         // SISWA PAGE
@@ -3458,12 +3111,10 @@
             try {
                 showLoading();
                 const result = await apiCall('getDataSiswa');
-
                 if (result.status) {
                     allSiswa = result.data;
                     filteredSiswa = [...allSiswa];
                     currentPage = 1;
-
                     loadFilterOptions();
                     renderSiswaTable();
                 }
@@ -3484,8 +3135,7 @@
                     selectKelas.innerHTML = '<option value="">Semua Kelas</option>';
                     resultKelas.data.forEach(kelas => {
                         const option = document.createElement('option');
-                        option.value = kelas;
-                        option.textContent = kelas;
+                        option.value = kelas; option.textContent = kelas;
                         selectKelas.appendChild(option);
                     });
                 }
@@ -3495,8 +3145,7 @@
                     selectSekolah.innerHTML = '<option value="">Semua Sekolah</option>';
                     resultSekolah.data.forEach(sekolah => {
                         const option = document.createElement('option');
-                        option.value = sekolah;
-                        option.textContent = sekolah;
+                        option.value = sekolah; option.textContent = sekolah;
                         selectSekolah.appendChild(option);
                     });
                 }
@@ -3516,6 +3165,9 @@
                 return;
             }
 
+            // BARU: tombol "Hapus" hanya dirender kalau user Super Admin.
+            const superAdmin = isSuperAdmin();
+
             tbody.innerHTML = paginatedData.map((siswa, index) => `
                 <tr>
                     <td data-label="no">${start + index + 1}</td>
@@ -3526,9 +3178,7 @@
                     <td data-label="username">${siswa.username}</td>
                     <td data-label="whatsapp">${siswa.wa}</td>
                     <td data-label="status">
-                        <span class="status-badge status-${siswa.status.toLowerCase()}">
-                            ${siswa.status}
-                        </span>
+                        <span class="status-badge status-${siswa.status.toLowerCase()}">${siswa.status}</span>
                     </td>
                     <td data-label="aksi" style="white-space: nowrap;">
                         <div class="action-buttons">
@@ -3538,9 +3188,10 @@
                             <button class="btn btn-secondary" onclick="editSiswa('${siswa.id}')">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
+                            ${superAdmin ? `
                             <button class="btn btn-danger" onclick="confirmHapus(${siswa.row})">
                                 <i class="fas fa-trash"></i> Hapus
-                            </button>
+                            </button>` : ''}
                         </div>
                     </td>
                 </tr>
@@ -3557,18 +3208,12 @@
         }
 
         document.getElementById('btnPrevPage').addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                renderSiswaTable();
-            }
+            if (currentPage > 1) { currentPage--; renderSiswaTable(); }
         });
 
         document.getElementById('btnNextPage').addEventListener('click', () => {
             const totalPages = Math.ceil(filteredSiswa.length / itemsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderSiswaTable();
-            }
+            if (currentPage < totalPages) { currentPage++; renderSiswaTable(); }
         });
 
         document.getElementById('siswaSearch').addEventListener('input', applyFilters);
@@ -3588,11 +3233,9 @@
                                   siswa.sekolah.toLowerCase().includes(search) ||
                                   siswa.username.toLowerCase().includes(search) ||
                                   String(siswa.id).toLowerCase().includes(search);
-
                 const matchKelas = !kelas || siswa.kelas === kelas;
                 const matchSekolah = !sekolah || siswa.sekolah === sekolah;
                 const matchStatus = !status || siswa.status === status;
-
                 return matchSearch && matchKelas && matchSekolah && matchStatus;
             });
 
@@ -3621,11 +3264,7 @@
         document.getElementById('btnGenerateUsername').addEventListener('click', async (e) => {
             e.preventDefault();
             const nama = document.getElementById('siswanama').value;
-            if (!nama) {
-                showAlert('Masukkan nama siswa terlebih dahulu', 'warning');
-                return;
-            }
-
+            if (!nama) { showAlert('Masukkan nama siswa terlebih dahulu', 'warning'); return; }
             try {
                 const result = await apiCall('generateUsername', nama);
                 document.getElementById('siswausername').value = result;
@@ -3668,13 +3307,8 @@
             try {
                 showLoading();
                 let result;
-
-                if (siswaId) {
-                    obj.row = siswaRow;
-                    result = await apiCall('updateSiswa', obj);
-                } else {
-                    result = await apiCall('tambahSiswa', obj);
-                }
+                if (siswaId) { obj.row = siswaRow; result = await apiCall('updateSiswa', obj); }
+                else { result = await apiCall('tambahSiswa', obj); }
 
                 if (result.status) {
                     showAlert(result.data || result.message, 'success');
@@ -3693,7 +3327,6 @@
         async function editSiswa(id) {
             try {
                 const result = await apiCall('getSiswa', id);
-
                 if (result.status) {
                     const siswa = result.data;
                     document.getElementById('modalSiswaTitle').textContent = 'Edit Siswa';
@@ -3725,7 +3358,6 @@
         async function previewSiswa(id) {
             try {
                 const result = await apiCall('getSiswa', id);
-
                 if (result.status) {
                     const siswa = result.data;
                     document.getElementById('previewNama').textContent = siswa.nama;
@@ -3738,7 +3370,6 @@
                     document.getElementById('previewStatus').textContent = 'Aktif';
                     document.getElementById('previewStatus').className = 'status-badge status-terkirim';
                     document.getElementById('previewCard').dataset.siswaId = siswa.id;
-
                     openModal('modalPreview');
                 }
             } catch (error) {
@@ -3752,11 +3383,7 @@
         document.getElementById('btnDownloadPNG').addEventListener('click', async () => {
             const card = document.getElementById('previewCard');
             try {
-                const canvas = await html2canvas(card, {
-                    useCORS: true,
-                    allowTaint: false,
-                    scale: 2
-                });
+                const canvas = await html2canvas(card, { useCORS: true, allowTaint: false, scale: 2 });
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL();
                 link.download = 'akun_siswa_' + new Date().getTime() + '.png';
@@ -3768,55 +3395,46 @@
         });
 
         // =====================================
-        // KIRIM WHATSAPP - CEPAT & LANGSUNG KE WA
+        // KIRIM WHATSAPP
         // =====================================
         document.getElementById('btnKirimWhatsapp').addEventListener('click', async () => {
             const siswaId = document.getElementById('previewCard').dataset.siswaId;
-            
-            // Langsung buat link WhatsApp tanpa loading (supaya cepat)
+
             apiCall('createWhatsapp', siswaId)
                 .then(resultWA => {
                     if (resultWA.status) {
-                        // LANGSUNG buka WhatsApp tanpa menunggu update status
                         window.open(resultWA.data, '_blank');
                         showAlert(`${EMO_ALERT.check} Membuka WhatsApp...`, 'success');
-                        
-                        // Tutup modal langsung
                         closeModal('modalPreview');
-                        
-                        // Update status dan refresh data di background (tidak perlu tunggu)
-                        apiCall('updateStatusById', {
-                            id: siswaId,
-                            admin: currentUser.nama
-                        })
-                        .then(resultUpdate => {
-                            if (resultUpdate.status) {
-                                showAlert(`${EMO_ALERT.check} Status berhasil diubah ke TERKIRIM`, 'success');
-                                // Refresh data setelah beberapa detik
-                                setTimeout(() => {
-                                    loadSiswa();
-                                }, 800);
-                            } else {
-                                showAlert(`${EMO_ALERT.warning} Update status gagal: ` + resultUpdate.message, 'warning');
-                            }
-                        })
-                        .catch(err => {
-                            console.error('Background update error:', err);
-                        });
+
+                        apiCall('updateStatusById', { id: siswaId, admin: currentUser.nama })
+                            .then(resultUpdate => {
+                                if (resultUpdate.status) {
+                                    showAlert(`${EMO_ALERT.check} Status berhasil diubah ke TERKIRIM`, 'success');
+                                    setTimeout(() => { loadSiswa(); }, 800);
+                                } else {
+                                    showAlert(`${EMO_ALERT.warning} Update status gagal: ` + resultUpdate.message, 'warning');
+                                }
+                            })
+                            .catch(err => { console.error('Background update error:', err); });
                     } else {
                         showAlert(`${EMO_ALERT.cross} Gagal membuat link WhatsApp: ` + resultWA.message, 'danger');
                     }
                 })
-                .catch(error => {
-                    showAlert(`${EMO_ALERT.cross} Error: ` + error.message, 'danger');
-                });
+                .catch(error => { showAlert(`${EMO_ALERT.cross} Error: ` + error.message, 'danger'); });
         });
 
         // =====================================
-        // HAPUS SISWA
+        // HAPUS SISWA (khusus Super Admin)
         // =====================================
 
         function confirmHapus(row) {
+            // BARU: pengaman lapis kedua di sisi klik, selain tombolnya
+            // sudah tidak dirender sama sekali untuk Admin biasa.
+            if (!isSuperAdmin()) {
+                showAlert('Akses ditolak: hapus data khusus Super Admin', 'warning');
+                return;
+            }
             document.getElementById('hapusRow').value = row;
             openModal('modalHapus');
         }
@@ -3824,16 +3442,15 @@
         document.getElementById('btnConfirmHapus').addEventListener('click', async () => {
             const row = document.getElementById('hapusRow').value;
 
-            if (!row) {
-                showAlert('Data tidak valid untuk dihapus', 'danger');
-                return;
-            }
+            if (!row) { showAlert('Data tidak valid untuk dihapus', 'danger'); return; }
 
             try {
                 showLoading();
+                // Kirim username juga supaya server bisa verifikasi role.
                 const result = await apiCall('hapusSiswa', {
                     row: Number(row),
-                    admin: currentUser.nama
+                    admin: currentUser.nama,
+                    username: currentUser.username
                 });
 
                 if (result.status) {
@@ -3851,17 +3468,17 @@
         });
 
         // =====================================
-        // LOG PAGE
+        // LOG PAGE (khusus Super Admin)
         // =====================================
 
         async function loadLogs() {
             try {
                 showLoading();
-                const result = await apiCall('getLogs');
-
-                if (result.status) {
-                    renderLogsTable(result.data);
-                }
+                // Kirim username supaya server memverifikasi role sebelum
+                // mengembalikan data log.
+                const result = await apiCall('getLogs', { username: currentUser.username });
+                if (result.status) { renderLogsTable(result.data); }
+                else { showAlert(result.message, 'danger'); }
             } catch (error) {
                 showAlert('Error loading logs', 'danger');
             } finally {
@@ -3871,12 +3488,7 @@
 
         function renderLogsTable(logs) {
             const tbody = document.getElementById('logTableBody');
-
-            if (logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada log</td></tr>';
-                return;
-            }
-
+            if (logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada log</td></tr>'; return; }
             tbody.innerHTML = logs.map(log => `
                 <tr>
                     <td data-label="no">${log.no}</td>
@@ -3888,17 +3500,12 @@
             `).join('');
         }
 
-        document.getElementById('logSearch').addEventListener('input', () => {
-            filterLogs();
-        });
-
-        document.getElementById('filterAktivitas').addEventListener('change', () => {
-            filterLogs();
-        });
+        document.getElementById('logSearch').addEventListener('input', () => { filterLogs(); });
+        document.getElementById('filterAktivitas').addEventListener('change', () => { filterLogs(); });
 
         async function filterLogs() {
             try {
-                const result = await apiCall('getLogs');
+                const result = await apiCall('getLogs', { username: currentUser.username });
 
                 if (result.status) {
                     let filtered = result.data;
@@ -3906,8 +3513,7 @@
                     const aktivitas = document.getElementById('filterAktivitas').value;
 
                     filtered = filtered.filter(log => {
-                        const matchSearch = log.admin.toLowerCase().includes(search) ||
-                                          log.target.toLowerCase().includes(search);
+                        const matchSearch = log.admin.toLowerCase().includes(search) || log.target.toLowerCase().includes(search);
                         const matchAktivitas = !aktivitas || log.aktivitas === aktivitas;
                         return matchSearch && matchAktivitas;
                     });
@@ -3922,22 +3528,18 @@
         document.getElementById('btnExportLog').addEventListener('click', async () => {
             try {
                 showLoading();
-                const result = await apiCall('getLogs');
+                const result = await apiCall('getLogs', { username: currentUser.username });
 
                 if (result.status && result.data.length > 0) {
                     const ws = XLSX.utils.json_to_sheet(result.data.map(log => ({
-                        'No': log.no,
-                        'Waktu': log.waktu,
-                        'Admin': log.admin,
-                        'Aktivitas': log.aktivitas,
-                        'Target': log.target
+                        'No': log.no, 'Waktu': log.waktu, 'Admin': log.admin, 'Aktivitas': log.aktivitas, 'Target': log.target
                     })));
-
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Log Aktivitas');
                     XLSX.writeFile(wb, 'Log_Aktivitas_' + new Date().getTime() + '.xlsx');
-
                     showAlert('Export Log berhasil', 'success');
+                } else if (!result.status) {
+                    showAlert(result.message, 'danger');
                 }
             } catch (error) {
                 showAlert('Error: ' + error.message, 'danger');
@@ -3947,13 +3549,12 @@
         });
 
         // =====================================
-        // SETTING PAGE
+        // SETTING PAGE (khusus Super Admin, kecuali ganti password sendiri)
         // =====================================
 
         async function loadSetting() {
             try {
                 const result = await apiCall('getSetting');
-
                 if (result) {
                     document.getElementById('settingNamaBimbel').value = result.nama_bimbel || '';
                     document.getElementById('settingAlamat').value = result.alamat || '';
@@ -3967,24 +3568,26 @@
         }
 
         document.getElementById('btnSaveSetting').addEventListener('click', async () => {
+            if (!isSuperAdmin()) {
+                showAlert('Akses ditolak: fitur ini khusus Super Admin', 'warning');
+                return;
+            }
+
             const obj = {
                 namaBimbel: document.getElementById('settingNamaBimbel').value,
                 alamat: document.getElementById('settingAlamat').value,
                 telepon: document.getElementById('settingTelepon').value,
                 linkLogin: document.getElementById('settingLinkLogin').value,
                 footer: document.getElementById('settingFooter').value,
-                admin: currentUser.nama
+                admin: currentUser.nama,
+                username: currentUser.username
             };
 
             try {
                 showLoading();
                 const result = await apiCall('saveSetting', obj);
-
-                if (result.status) {
-                    showAlert(result.data || result.message, 'success');
-                } else {
-                    showAlert(result.message, 'danger');
-                }
+                if (result.status) { showAlert(result.data || result.message, 'success'); }
+                else { showAlert(result.message, 'danger'); }
             } catch (error) {
                 showAlert('Error: ' + error.message, 'danger');
             } finally {
@@ -3997,22 +3600,12 @@
             const passwordBaru = document.getElementById('passwordBaru').value;
             const passwordKonfirmasi = document.getElementById('passwordKonfirmasi').value;
 
-            if (passwordBaru !== passwordKonfirmasi) {
-                showAlert('Password tidak cocok', 'danger');
-                return;
-            }
+            if (passwordBaru !== passwordKonfirmasi) { showAlert('Password tidak cocok', 'danger'); return; }
 
             try {
                 showLoading();
-                const result = await apiCall('gantiPassword', {
-                    username: currentUser.username,
-                    passwordBaru
-                });
-
-                if (result.status) {
-                    showAlert(result.data || result.message, 'success');
-                    document.getElementById('formGantiPassword').reset();
-                }
+                const result = await apiCall('gantiPassword', { username: currentUser.username, passwordBaru });
+                if (result.status) { showAlert(result.data || result.message, 'success'); document.getElementById('formGantiPassword').reset(); }
             } catch (error) {
                 showAlert('Error: ' + error.message, 'danger');
             } finally {
