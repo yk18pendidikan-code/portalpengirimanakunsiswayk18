@@ -1810,12 +1810,14 @@
                TABEL -> KARTU DI MOBILE
                ===================================== */
             #siswaTable thead,
-            #logTable thead {
+            #logTable thead,
+            #ortuTable thead {
                 display: none;
             }
 
             #siswaTable, #siswaTable tbody, #siswaTable tr,
-            #logTable, #logTable tbody, #logTable tr {
+            #logTable, #logTable tbody, #logTable tr,
+            #ortuTable, #ortuTable tbody, #ortuTable tr {
                 display: block;
                 width: 100%;
             }
@@ -1866,7 +1868,8 @@
             }
 
             /* Nomor urut: tidak ditampilkan */
-            #siswaTable td[data-label="no"] {
+            #siswaTable td[data-label="no"],
+            #ortuTable td[data-label="no"] {
                 display: none;
             }
 
@@ -1887,13 +1890,15 @@
                 content: '';
             }
 
-            #siswaTable td[data-label="status"] .status-badge {
+            #siswaTable td[data-label="status"] .status-badge,
+            #ortuTable td[data-label="status"] .status-badge {
                 font-size: 11px;
                 padding: 4px 12px;
             }
 
             /* Aksi: tombol full-width */
-            #siswaTable td[data-label="aksi"] {
+            #siswaTable td[data-label="aksi"],
+            #ortuTable td[data-label="aksi"] {
                 display: block;
                 text-align: left;
                 padding-top: 12px;
@@ -1901,19 +1906,79 @@
                 border-top: 1px solid var(--light);
                 border-bottom: none;
             }
-            #siswaTable td[data-label="aksi"]::before {
+            #siswaTable td[data-label="aksi"]::before,
+            #ortuTable td[data-label="aksi"]::before {
                 display: none;
             }
-            #siswaTable td[data-label="aksi"] .action-buttons {
+            #siswaTable td[data-label="aksi"] .action-buttons,
+            #ortuTable td[data-label="aksi"] .action-buttons {
                 flex-direction: row;
                 gap: 8px;
             }
-            #siswaTable td[data-label="aksi"] .btn {
+            #siswaTable td[data-label="aksi"] .btn,
+            #ortuTable td[data-label="aksi"] .btn {
                 flex: 1;
                 padding: 9px 6px !important;
                 font-size: 11px !important;
                 min-height: 38px !important;
                 justify-content: center;
+            }
+
+            /* ---- Kartu Data Akun Ortu ---- */
+            #ortuTable tr {
+                display: flex;
+                flex-direction: column;
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 14px;
+                margin-bottom: 12px;
+                box-shadow: var(--shadow);
+                position: relative;
+            }
+
+            #ortuTable td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+                padding: 9px 0;
+                border-bottom: 1px dashed var(--light);
+                font-size: 14px;
+                white-space: normal;
+                text-align: right;
+                line-height: 1.3;
+            }
+
+            #ortuTable td:last-child {
+                border-bottom: none;
+            }
+
+            #ortuTable td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--gray);
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                text-align: left;
+                flex-shrink: 0;
+            }
+
+            #ortuTable td[data-label="namaortu"] {
+                order: -1;
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--primary-dark);
+                border-bottom: 2px solid var(--primary-light);
+                padding-bottom: 10px;
+                margin-bottom: 4px;
+                justify-content: flex-start;
+                text-align: left;
+                line-height: 1.2;
+            }
+            #ortuTable td[data-label="namaortu"]::before {
+                content: '';
             }
 
             /* ---- Kartu Log Aktivitas ---- */
@@ -2123,11 +2188,13 @@
                 margin-top: 2px;
             }
 
-            #siswaTable td[data-label="nama"] {
+            #siswaTable td[data-label="nama"],
+            #ortuTable td[data-label="namaortu"] {
                 font-size: 16px;
             }
 
-            #siswaTable td[data-label="aksi"] .btn {
+            #siswaTable td[data-label="aksi"] .btn,
+            #ortuTable td[data-label="aksi"] .btn {
                 font-size: 10px !important;
                 min-height: 36px !important;
             }
@@ -2229,6 +2296,10 @@
                 <a href="#" class="menu-item" data-page="siswa">
                     <i class="fas fa-users"></i>
                     <span>Data Akun Siswa</span>
+                </a>
+                <a href="#" class="menu-item" data-page="ortu">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Data Akun Ortu</span>
                 </a>
                 <a href="#" class="menu-item" data-page="statistik-sekolah">
                     <i class="fas fa-chart-bar"></i>
@@ -2430,6 +2501,60 @@
                     </div>
                 </div>
 
+                <!-- DATA AKUN ORTU PAGE (BARU) -->
+                <div id="page-ortu" class="page-content">
+                    <div class="page-header">
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
+                        <p>Kelola data akun orang tua dan kirim akun</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="filter-group">
+                                <div class="search-input">
+                                    <input type="text" id="ortuSearch" placeholder="Cari nama ortu, nama siswa, kelas, sekolah...">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <select id="filterKelasOrtu" class="select-filter"><option value="">Semua Kelas</option></select>
+                                <select id="filterSekolahOrtu" class="select-filter"><option value="">Semua Sekolah</option></select>
+                                <select id="filterStatusOrtu" class="select-filter">
+                                    <option value="">Semua Status</option>
+                                    <option value="TERKIRIM">Terkirim</option>
+                                    <option value="BELUM">Belum</option>
+                                </select>
+                                <button id="btnClearFilterOrtu" class="btn btn-secondary"><i class="fas fa-times"></i> Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="toolbar">
+                                <button id="btnTambahOrtu" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Akun Ortu</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card table-responsive">
+                        <table id="ortuTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>No</th><th>Nama Ortu</th><th>Nama Siswa</th><th>Kelas</th>
+                                    <th>Sekolah</th><th>Username</th><th>WhatsApp</th>
+                                    <th>Status Pengiriman</th><th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ortuTableBody"><tr><td colspan="9" class="text-center">Memuat data...</td></tr></tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination">
+                        <button id="btnPrevPageOrtu" class="btn btn-secondary">Sebelumnya</button>
+                        <span id="pageInfoOrtu">Halaman 1</span>
+                        <button id="btnNextPageOrtu" class="btn btn-secondary">Selanjutnya</button>
+                    </div>
+                </div>
+
                 <!-- LOG PAGE (khusus Super Admin) -->
                 <div id="page-log" class="page-content">
                     <div class="page-header">
@@ -2450,6 +2575,10 @@
                                     <option value="UPDATE SISWA">Update Siswa</option>
                                     <option value="HAPUS SISWA">Hapus Siswa</option>
                                     <option value="KIRIM AKUN">Kirim Akun</option>
+                                    <option value="TAMBAH AKUN ORTU">Tambah Akun Ortu</option>
+                                    <option value="UPDATE AKUN ORTU">Update Akun Ortu</option>
+                                    <option value="HAPUS AKUN ORTU">Hapus Akun Ortu</option>
+                                    <option value="KIRIM AKUN ORTU">Kirim Akun Ortu</option>
                                     <option value="RESET PASSWORD">Reset Password</option>
                                     <option value="RESET STATUS">Reset Status</option>
                                 </select>
@@ -2550,6 +2679,53 @@
         </div>
     </div>
 
+    <!-- MODAL FORM AKUN ORTU (BARU) -->
+    <div id="modalOrtu" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 id="modalOrtuTitle">Tambah Akun Ortu Baru</h2>
+                <button class="btn-close" data-modal="modalOrtu">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formOrtu">
+                    <div class="form-row">
+                        <div class="form-group"><label>Nama Ortu <span class="required">*</span></label><input type="text" id="ortunamaortu" required></div>
+                        <div class="form-group"><label>Nama Siswa <span class="required">*</span></label><input type="text" id="ortunamasiswa" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Kelas <span class="required">*</span></label><input type="text" id="ortukelas" required></div>
+                        <div class="form-group"><label>Sekolah <span class="required">*</span></label><input type="text" id="ortusekolah" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>No WhatsApp Ortu <span class="required">*</span></label><input type="text" id="ortuwa" placeholder="08xxxxxx" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Username <span class="required">*</span></label>
+                            <div class="input-group">
+                                <input type="text" id="ortuusername" required>
+                                <button type="button" class="btn btn-secondary" id="btnGenerateUsernameOrtu"><i class="fas fa-sync-alt"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Password <span class="required">*</span></label>
+                            <div class="input-group">
+                                <input type="text" id="ortupassword" required>
+                                <button type="button" class="btn btn-secondary" id="btnGeneratePasswordOrtu"><i class="fas fa-sync-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="ortuId">
+                    <input type="hidden" id="ortuRow">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-modal="modalOrtu">Batal</button>
+                <button class="btn btn-primary" id="btnSaveOrtu">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modalPreview" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -2594,6 +2770,52 @@
         </div>
     </div>
 
+    <!-- MODAL PREVIEW AKUN ORTU (BARU) -->
+    <div id="modalPreviewOrtu" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Preview Akun Ortu</h2>
+                <button class="btn-close" data-modal="modalPreviewOrtu">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="previewOrtuCard" class="account-card">
+                    <div class="preview-header-band">
+                        <img src="https://tosbmptn15ub.weebly.com/uploads/4/6/1/4/46146887/929305838.png" alt="Neutron" crossorigin="anonymous" class="preview-logo">
+                        <div class="preview-brand">
+                            <span class="brand-title">Kartu Akun Ortu</span>
+                            <span class="brand-sub">Neutron Murangan</span>
+                        </div>
+                    </div>
+                    <div class="preview-identity">
+                        <div id="previewOrtuAvatar" class="preview-avatar">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.5c-3.3 0-9.8 1.6-9.8 4.9v2.4h19.6v-2.4c0-3.3-6.5-4.9-9.8-4.9z"/>
+                            </svg>
+                        </div>
+                        <div class="preview-identity-text">
+                            <p id="previewOrtuNama">Nama Ortu</p>
+                            <span id="previewOrtuNamaSiswa">Ananda: -</span>
+                        </div>
+                    </div>
+                    <div class="card-body-preview">
+                        <div class="preview-item"><span class="label">Nama Siswa</span><span id="previewOrtuSiswa" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Kelas</span><span id="previewOrtuKelas" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Sekolah</span><span id="previewOrtuSekolah" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Username</span><span id="previewOrtuUsername" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Password</span><span id="previewOrtuPassword" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">WhatsApp</span><span id="previewOrtuWA" class="value">-</span></div>
+                        <div class="preview-item"><span class="label">Status</span><span id="previewOrtuStatus">-</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" id="btnDownloadPNGOrtu"><i class="fas fa-image"></i> Download PNG</button>
+                <button class="btn btn-primary" id="btnKirimWhatsappOrtu"><i class="fab fa-whatsapp"></i> Kirim WhatsApp</button>
+                <button class="btn btn-secondary" data-modal="modalPreviewOrtu">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modalHapus" class="modal">
         <div class="modal-content modal-sm">
             <div class="modal-header">
@@ -2606,6 +2828,22 @@
                 <button class="btn btn-danger" id="btnConfirmHapus">Hapus</button>
             </div>
             <input type="hidden" id="hapusRow">
+        </div>
+    </div>
+
+    <!-- MODAL HAPUS AKUN ORTU (BARU, khusus Super Admin) -->
+    <div id="modalHapusOrtu" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>Konfirmasi Hapus</h2>
+                <button class="btn-close" data-modal="modalHapusOrtu">&times;</button>
+            </div>
+            <div class="modal-body"><p>Apakah Anda yakin ingin menghapus data akun ortu ini?</p></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-modal="modalHapusOrtu">Batal</button>
+                <button class="btn btn-danger" id="btnConfirmHapusOrtu">Hapus</button>
+            </div>
+            <input type="hidden" id="hapusRowOrtu">
         </div>
     </div>
 
@@ -2649,6 +2887,11 @@
         let currentPage = 1;
         const itemsPerPage = 10;
         let charts = {};
+
+        // BARU: variabel untuk Data Akun Ortu
+        let allOrtu = [];
+        let filteredOrtu = [];
+        let currentPageOrtu = 1;
 
         let statistikSekolahData = null;
         let statistikKelasData = null;
@@ -2937,6 +3180,7 @@
             const titles = {
                 'dashboard': 'Dashboard',
                 'siswa': 'Data Siswa',
+                'ortu': 'Data Akun Ortu',
                 'statistik-sekolah': 'Statistik Sekolah',
                 'statistik-kelas': 'Statistik Kelas',
                 'log': 'Log Aktivitas',
@@ -2948,6 +3192,7 @@
 
             if (page === 'dashboard') { loadDashboard(); }
             else if (page === 'siswa') { loadSiswa(); }
+            else if (page === 'ortu') { loadOrtu(); }
             else if (page === 'statistik-sekolah') { loadStatistikSekolah(); }
             else if (page === 'statistik-kelas') { loadStatistikKelas(); }
             else if (page === 'log') { loadLogs(); }
@@ -3457,6 +3702,359 @@
                     showAlert(result.data || result.message, 'success');
                     closeModal('modalHapus');
                     loadSiswa();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // =====================================
+        // DATA AKUN ORTU PAGE (BARU)
+        // =====================================
+
+        async function loadOrtu() {
+            try {
+                showLoading();
+                const result = await apiCall('getDataOrtu');
+                if (result.status) {
+                    allOrtu = result.data;
+                    filteredOrtu = [...allOrtu];
+                    currentPageOrtu = 1;
+                    loadFilterOptionsOrtu();
+                    renderOrtuTable();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading data akun ortu', 'danger');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadFilterOptionsOrtu() {
+            try {
+                const resultKelas = await apiCall('getListKelasOrtu');
+                const resultSekolah = await apiCall('getListSekolahOrtu');
+
+                if (resultKelas.status) {
+                    const selectKelas = document.getElementById('filterKelasOrtu');
+                    selectKelas.innerHTML = '<option value="">Semua Kelas</option>';
+                    resultKelas.data.forEach(kelas => {
+                        const option = document.createElement('option');
+                        option.value = kelas; option.textContent = kelas;
+                        selectKelas.appendChild(option);
+                    });
+                }
+
+                if (resultSekolah.status) {
+                    const selectSekolah = document.getElementById('filterSekolahOrtu');
+                    selectSekolah.innerHTML = '<option value="">Semua Sekolah</option>';
+                    resultSekolah.data.forEach(sekolah => {
+                        const option = document.createElement('option');
+                        option.value = sekolah; option.textContent = sekolah;
+                        selectSekolah.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading filter options ortu:', error);
+            }
+        }
+
+        function renderOrtuTable() {
+            const tbody = document.getElementById('ortuTableBody');
+            const start = (currentPageOrtu - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedData = filteredOrtu.slice(start, end);
+
+            if (paginatedData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
+                updatePaginationOrtu();
+                return;
+            }
+
+            // Tombol "Hapus" hanya dirender kalau user Super Admin.
+            const superAdmin = isSuperAdmin();
+
+            tbody.innerHTML = paginatedData.map((ortu, index) => `
+                <tr>
+                    <td data-label="no">${start + index + 1}</td>
+                    <td data-label="namaortu">${ortu.namaOrtu}</td>
+                    <td data-label="namasiswa">${ortu.namaSiswa}</td>
+                    <td data-label="kelas">${ortu.kelas}</td>
+                    <td data-label="sekolah">${ortu.sekolah}</td>
+                    <td data-label="username">${ortu.username}</td>
+                    <td data-label="whatsapp">${ortu.wa}</td>
+                    <td data-label="status">
+                        <span class="status-badge status-${ortu.status.toLowerCase()}">${ortu.status}</span>
+                    </td>
+                    <td data-label="aksi" style="white-space: nowrap;">
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="previewOrtu('${ortu.id}')">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
+                            <button class="btn btn-secondary" onclick="editOrtu('${ortu.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            ${superAdmin ? `
+                            <button class="btn btn-danger" onclick="confirmHapusOrtu(${ortu.row})">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            updatePaginationOrtu();
+        }
+
+        function updatePaginationOrtu() {
+            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPage));
+            document.getElementById('pageInfoOrtu').textContent = `Halaman ${currentPageOrtu} dari ${totalPages}`;
+            document.getElementById('btnPrevPageOrtu').disabled = currentPageOrtu === 1;
+            document.getElementById('btnNextPageOrtu').disabled = currentPageOrtu === totalPages;
+        }
+
+        document.getElementById('btnPrevPageOrtu').addEventListener('click', () => {
+            if (currentPageOrtu > 1) { currentPageOrtu--; renderOrtuTable(); }
+        });
+
+        document.getElementById('btnNextPageOrtu').addEventListener('click', () => {
+            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPage));
+            if (currentPageOrtu < totalPages) { currentPageOrtu++; renderOrtuTable(); }
+        });
+
+        document.getElementById('ortuSearch').addEventListener('input', applyFiltersOrtu);
+        document.getElementById('filterKelasOrtu').addEventListener('change', applyFiltersOrtu);
+        document.getElementById('filterSekolahOrtu').addEventListener('change', applyFiltersOrtu);
+        document.getElementById('filterStatusOrtu').addEventListener('change', applyFiltersOrtu);
+
+        function applyFiltersOrtu() {
+            const search = document.getElementById('ortuSearch').value.toLowerCase();
+            const kelas = document.getElementById('filterKelasOrtu').value;
+            const sekolah = document.getElementById('filterSekolahOrtu').value;
+            const status = document.getElementById('filterStatusOrtu').value;
+
+            filteredOrtu = allOrtu.filter(ortu => {
+                const matchSearch = ortu.namaOrtu.toLowerCase().includes(search) ||
+                                  ortu.namaSiswa.toLowerCase().includes(search) ||
+                                  ortu.kelas.toLowerCase().includes(search) ||
+                                  ortu.sekolah.toLowerCase().includes(search) ||
+                                  ortu.username.toLowerCase().includes(search);
+                const matchKelas = !kelas || ortu.kelas === kelas;
+                const matchSekolah = !sekolah || ortu.sekolah === sekolah;
+                const matchStatus = !status || ortu.status === status;
+                return matchSearch && matchKelas && matchSekolah && matchStatus;
+            });
+
+            currentPageOrtu = 1;
+            renderOrtuTable();
+        }
+
+        document.getElementById('btnClearFilterOrtu').addEventListener('click', () => {
+            document.getElementById('ortuSearch').value = '';
+            document.getElementById('filterKelasOrtu').value = '';
+            document.getElementById('filterSekolahOrtu').value = '';
+            document.getElementById('filterStatusOrtu').value = '';
+            applyFiltersOrtu();
+        });
+
+        document.getElementById('btnTambahOrtu').addEventListener('click', () => {
+            document.getElementById('formOrtu').reset();
+            document.getElementById('modalOrtuTitle').textContent = 'Tambah Akun Ortu Baru';
+            document.getElementById('ortuId').value = '';
+            document.getElementById('ortuRow').value = '';
+            openModal('modalOrtu');
+        });
+
+        document.getElementById('btnGenerateUsernameOrtu').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const nama = document.getElementById('ortunamaortu').value;
+            if (!nama) { showAlert('Masukkan nama ortu terlebih dahulu', 'warning'); return; }
+            try {
+                const result = await apiCall('generateUsername', nama);
+                document.getElementById('ortuusername').value = result;
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        });
+
+        document.getElementById('btnGeneratePasswordOrtu').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const result = await apiCall('generatePassword');
+                document.getElementById('ortupassword').value = result;
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        });
+
+        document.getElementById('btnSaveOrtu').addEventListener('click', async () => {
+            const ortuId = document.getElementById('ortuId').value;
+            const ortuRow = document.getElementById('ortuRow').value;
+
+            const obj = {
+                namaOrtu: document.getElementById('ortunamaortu').value,
+                namaSiswa: document.getElementById('ortunamasiswa').value,
+                kelas: document.getElementById('ortukelas').value,
+                sekolah: document.getElementById('ortusekolah').value,
+                wa: document.getElementById('ortuwa').value,
+                username: document.getElementById('ortuusername').value,
+                password: document.getElementById('ortupassword').value,
+                admin: currentUser.nama
+            };
+
+            if (!obj.namaOrtu || !obj.namaSiswa || !obj.kelas || !obj.sekolah || !obj.wa || !obj.username || !obj.password) {
+                showAlert('Semua field harus diisi', 'warning');
+                return;
+            }
+
+            try {
+                showLoading();
+                let result;
+                if (ortuId) { obj.row = ortuRow; result = await apiCall('updateOrtu', obj); }
+                else { result = await apiCall('tambahOrtu', obj); }
+
+                if (result.status) {
+                    showAlert(result.data || result.message, 'success');
+                    closeModal('modalOrtu');
+                    loadOrtu();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        async function editOrtu(id) {
+            try {
+                const result = await apiCall('getOrtu', id);
+                if (result.status) {
+                    const ortu = result.data;
+                    document.getElementById('modalOrtuTitle').textContent = 'Edit Akun Ortu';
+                    document.getElementById('ortunamaortu').value = ortu.namaOrtu;
+                    document.getElementById('ortunamasiswa').value = ortu.namaSiswa;
+                    document.getElementById('ortukelas').value = ortu.kelas;
+                    document.getElementById('ortusekolah').value = ortu.sekolah;
+                    document.getElementById('ortuwa').value = ortu.wa;
+                    document.getElementById('ortuusername').value = ortu.username;
+                    document.getElementById('ortupassword').value = ortu.password;
+                    document.getElementById('ortuId').value = ortu.id;
+                    document.getElementById('ortuRow').value = ortu.row;
+                    openModal('modalOrtu');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        }
+
+        async function previewOrtu(id) {
+            try {
+                const result = await apiCall('getOrtu', id);
+                if (result.status) {
+                    const ortu = result.data;
+                    document.getElementById('previewOrtuNama').textContent = ortu.namaOrtu;
+                    document.getElementById('previewOrtuNamaSiswa').textContent = 'Ananda: ' + ortu.namaSiswa;
+                    document.getElementById('previewOrtuSiswa').textContent = ortu.namaSiswa;
+                    document.getElementById('previewOrtuKelas').textContent = ortu.kelas;
+                    document.getElementById('previewOrtuSekolah').textContent = ortu.sekolah;
+                    document.getElementById('previewOrtuUsername').textContent = ortu.username;
+                    document.getElementById('previewOrtuPassword').textContent = ortu.password;
+                    document.getElementById('previewOrtuWA').textContent = ortu.wa;
+                    document.getElementById('previewOrtuStatus').textContent = 'Aktif';
+                    document.getElementById('previewOrtuStatus').className = 'status-badge status-terkirim';
+                    document.getElementById('previewOrtuCard').dataset.ortuId = ortu.id;
+                    openModal('modalPreviewOrtu');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        }
+
+        // =====================================
+        // DOWNLOAD PNG (ORTU)
+        // =====================================
+        document.getElementById('btnDownloadPNGOrtu').addEventListener('click', async () => {
+            const card = document.getElementById('previewOrtuCard');
+            try {
+                const canvas = await html2canvas(card, { useCORS: true, allowTaint: false, scale: 2 });
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL();
+                link.download = 'akun_ortu_' + new Date().getTime() + '.png';
+                link.click();
+                showAlert('Download PNG berhasil', 'success');
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        });
+
+        // =====================================
+        // KIRIM WHATSAPP (ORTU)
+        // =====================================
+        document.getElementById('btnKirimWhatsappOrtu').addEventListener('click', async () => {
+            const ortuId = document.getElementById('previewOrtuCard').dataset.ortuId;
+
+            apiCall('createWhatsappOrtu', ortuId)
+                .then(resultWA => {
+                    if (resultWA.status) {
+                        window.open(resultWA.data, '_blank');
+                        showAlert(`${EMO_ALERT.check} Membuka WhatsApp...`, 'success');
+                        closeModal('modalPreviewOrtu');
+
+                        apiCall('updateStatusByIdOrtu', { id: ortuId, admin: currentUser.nama })
+                            .then(resultUpdate => {
+                                if (resultUpdate.status) {
+                                    showAlert(`${EMO_ALERT.check} Status berhasil diubah ke TERKIRIM`, 'success');
+                                    setTimeout(() => { loadOrtu(); }, 800);
+                                } else {
+                                    showAlert(`${EMO_ALERT.warning} Update status gagal: ` + resultUpdate.message, 'warning');
+                                }
+                            })
+                            .catch(err => { console.error('Background update error:', err); });
+                    } else {
+                        showAlert(`${EMO_ALERT.cross} Gagal membuat link WhatsApp: ` + resultWA.message, 'danger');
+                    }
+                })
+                .catch(error => { showAlert(`${EMO_ALERT.cross} Error: ` + error.message, 'danger'); });
+        });
+
+        // =====================================
+        // HAPUS AKUN ORTU (khusus Super Admin)
+        // =====================================
+
+        function confirmHapusOrtu(row) {
+            if (!isSuperAdmin()) {
+                showAlert('Akses ditolak: hapus data khusus Super Admin', 'warning');
+                return;
+            }
+            document.getElementById('hapusRowOrtu').value = row;
+            openModal('modalHapusOrtu');
+        }
+
+        document.getElementById('btnConfirmHapusOrtu').addEventListener('click', async () => {
+            const row = document.getElementById('hapusRowOrtu').value;
+
+            if (!row) { showAlert('Data tidak valid untuk dihapus', 'danger'); return; }
+
+            try {
+                showLoading();
+                const result = await apiCall('hapusOrtu', {
+                    row: Number(row),
+                    admin: currentUser.nama,
+                    username: currentUser.username
+                });
+
+                if (result.status) {
+                    showAlert(result.data || result.message, 'success');
+                    closeModal('modalHapusOrtu');
+                    loadOrtu();
                 } else {
                     showAlert(result.message, 'danger');
                 }
