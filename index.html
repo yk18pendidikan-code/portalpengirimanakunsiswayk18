@@ -1529,6 +1529,85 @@
             word-break: break-all;
         }
 
+        /* =====================================================
+           PANEL KREDENSIAL (Username & Password) - dipisah dari
+           identitas biar tidak tercampur dan lebih mudah dibaca
+           saat mau login / copy.
+           ===================================================== */
+        .credential-panel {
+            background: repeating-linear-gradient(
+                135deg,
+                #fff8f8,
+                #fff8f8 10px,
+                #fff5f5 10px,
+                #fff5f5 20px
+            );
+            border: 1.5px dashed var(--primary);
+            border-radius: 10px;
+            margin: 4px 20px 14px;
+            padding: 10px 14px 12px;
+        }
+
+        .credential-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+        }
+
+        .credential-panel-title i {
+            font-size: 11px;
+        }
+
+        .credential-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+        }
+
+        .credential-row + .credential-row {
+            border-top: 1px dashed rgba(227, 27, 35, 0.25);
+        }
+
+        .credential-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            flex-shrink: 0;
+        }
+
+        .credential-label i {
+            width: 14px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .credential-value {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-darker);
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            letter-spacing: 0.6px;
+            word-break: break-all;
+            text-align: right;
+        }
+
         /* --- Footer branding --- */
         .preview-footer {
             background: var(--primary-darker);
@@ -2786,8 +2865,19 @@
                     <div class="card-body-preview">
                         <div class="preview-item"><span class="label">Nomor Induk Neutron</span><span id="previewId" class="value">-</span></div>
                         <div class="preview-item"><span class="label">Sekolah</span><span id="previewSekolah" class="value">-</span></div>
-                        <div class="preview-item"><span class="label">Username</span><span id="previewUsername" class="value">-</span></div>
-                        <div class="preview-item"><span class="label">Password</span><span id="previewPassword" class="value">-</span></div>
+                    </div>
+                    <div class="credential-panel">
+                        <div class="credential-panel-title"><i class="fas fa-shield-alt"></i> Informasi Login</div>
+                        <div class="credential-row">
+                            <span class="credential-label"><i class="fas fa-user"></i> Username</span>
+                            <span id="previewUsername" class="credential-value">-</span>
+                        </div>
+                        <div class="credential-row">
+                            <span class="credential-label"><i class="fas fa-lock"></i> Password</span>
+                            <span id="previewPassword" class="credential-value">-</span>
+                        </div>
+                    </div>
+                    <div class="card-body-preview" style="padding-top: 0;">
                         <div class="preview-item"><span class="label">WhatsApp</span><span id="previewWA" class="value">-</span></div>
                         <div class="preview-item"><span class="label">Status</span><span id="previewStatus">-</span></div>
                     </div>
@@ -2835,8 +2925,19 @@
                         <div class="preview-item"><span class="label">Nama Siswa</span><span id="previewOrtuSiswa" class="value">-</span></div>
                         <div class="preview-item"><span class="label">Kelas</span><span id="previewOrtuKelas" class="value">-</span></div>
                         <div class="preview-item"><span class="label">Sekolah</span><span id="previewOrtuSekolah" class="value">-</span></div>
-                        <div class="preview-item"><span class="label">Username</span><span id="previewOrtuUsername" class="value">-</span></div>
-                        <div class="preview-item"><span class="label">Password</span><span id="previewOrtuPassword" class="value">-</span></div>
+                    </div>
+                    <div class="credential-panel">
+                        <div class="credential-panel-title"><i class="fas fa-shield-alt"></i> Informasi Login</div>
+                        <div class="credential-row">
+                            <span class="credential-label"><i class="fas fa-user"></i> Username</span>
+                            <span id="previewOrtuUsername" class="credential-value">-</span>
+                        </div>
+                        <div class="credential-row">
+                            <span class="credential-label"><i class="fas fa-lock"></i> Password</span>
+                            <span id="previewOrtuPassword" class="credential-value">-</span>
+                        </div>
+                    </div>
+                    <div class="card-body-preview" style="padding-top: 0;">
                         <div class="preview-item"><span class="label">WhatsApp</span><span id="previewOrtuWA" class="value">-</span></div>
                         <div class="preview-item"><span class="label">Status</span><span id="previewOrtuStatus">-</span></div>
                     </div>
