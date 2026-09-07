@@ -1458,6 +1458,34 @@
             letter-spacing: 0.5px;
         }
 
+        /* --- Badge "Orang Tua dari <Nama Siswa>" di preview Akun Ortu --- */
+        .preview-ortu-siswa-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-light), #ffffff);
+            border: 1px solid var(--border);
+            padding: 4px 11px 4px 8px;
+            border-radius: 20px;
+            letter-spacing: 0.2px;
+            max-width: 100%;
+        }
+
+        .preview-ortu-siswa-badge i {
+            font-size: 10px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .preview-ortu-siswa-badge span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         /* --- Tabel info akun --- */
         .card-body-preview {
             background: var(--white);
@@ -2797,7 +2825,10 @@
                         </div>
                         <div class="preview-identity-text">
                             <p id="previewOrtuNama">Nama Ortu</p>
-                            <span id="previewOrtuNamaSiswa">Orang Tua dari Siswa: -</span>
+                            <span id="previewOrtuNamaSiswa" class="preview-ortu-siswa-badge">
+                                <i class="fas fa-user-graduate"></i>
+                                <span id="previewOrtuNamaSiswaText">Orang Tua dari -</span>
+                            </span>
                         </div>
                     </div>
                     <div class="card-body-preview">
@@ -3964,7 +3995,7 @@
                 if (result.status) {
                     const ortu = result.data;
                     document.getElementById('previewOrtuNama').textContent = ortu.namaOrtu;
-                    document.getElementById('previewOrtuNamaSiswa').textContent = 'Ananda: ' + ortu.namaSiswa;
+                    document.getElementById('previewOrtuNamaSiswaText').textContent = 'Orang Tua dari ' + ortu.namaSiswa;
                     document.getElementById('previewOrtuSiswa').textContent = ortu.namaSiswa;
                     document.getElementById('previewOrtuKelas').textContent = ortu.kelas;
                     document.getElementById('previewOrtuSekolah').textContent = ortu.sekolah;
