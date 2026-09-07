@@ -2357,7 +2357,7 @@
                 <!-- DASHBOARD PAGE -->
                 <div id="page-dashboard" class="page-content active">
                     <div class="page-header">
-                        <h2>PORTAL PENGIRIMAN AKUN SISWA & ORTU NEUTRON MURANGAN</h2>
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Statistik dan ringkasan data siswa</p>
                     </div>
 
@@ -2412,7 +2412,7 @@
                 <!-- STATISTIK SEKOLAH PAGE -->
                 <div id="page-statistik-sekolah" class="page-content">
                     <div class="page-header">
-                        <h2>PORTAL PENGIRIMAN AKUN SISWA & ORTU NEUTRON MURANGAN</h2>
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Statistik sebaran siswa per sekolah</p>
                     </div>
                     <div class="card">
@@ -2431,7 +2431,7 @@
                 <!-- STATISTIK KELAS PAGE -->
                 <div id="page-statistik-kelas" class="page-content">
                     <div class="page-header">
-                        <h2>PORTAL PENGIRIMAN AKUN SISWA & ORTU NEUTRON MURANGAN</h2>
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Statistik sebaran siswa per kelas</p>
                     </div>
                     <div class="card">
@@ -2450,7 +2450,7 @@
                 <!-- SISWA PAGE -->
                 <div id="page-siswa" class="page-content">
                     <div class="page-header">
-                        <h2>PORTAL PENGIRIMAN AKUN SISWA & ORTU NEUTRON MURANGAN</h2>
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Kelola data siswa dan kirim akun</p>
                     </div>
 
@@ -2504,7 +2504,7 @@
                 <!-- DATA AKUN ORTU PAGE (BARU) -->
                 <div id="page-ortu" class="page-content">
                     <div class="page-header">
-                        <h2>PORTAL PENGIRIMAN AKUN SISWA & ORTU NEUTRON MURANGAN</h2>
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Kelola data akun orang tua dan kirim akun</p>
                     </div>
 
@@ -2558,7 +2558,7 @@
                 <!-- LOG PAGE (khusus Super Admin) -->
                 <div id="page-log" class="page-content">
                     <div class="page-header">
-                        <h2>PORTAL PENGIRIMAN AKUN SISWA & ORTU NEUTRON MURANGAN</h2>
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Riwayat semua aktivitas admin</p>
                     </div>
                     <div class="card">
@@ -2597,7 +2597,7 @@
                 <!-- SETTING PAGE (khusus Super Admin, kecuali form ganti password sendiri) -->
                 <div id="page-setting" class="page-content">
                     <div class="page-header">
-                        <h2>PORTAL PENGIRIMAN AKUN SISWA & ORTU NEUTRON MURANGAN</h2>
+                        <h2>PORTAL PENGIRIMAN AKUN SISWA NEUTRON MURANGAN</h2>
                         <p>Konfigurasi aplikasi dan akun admin</p>
                     </div>
 
@@ -2608,6 +2608,9 @@
                             <div class="form-group"><label>Alamat</label><input type="text" id="settingAlamat" placeholder="Alamat"></div>
                             <div class="form-group"><label>Telepon</label><input type="text" id="settingTelepon" placeholder="Nomor telepon"></div>
                             <div class="form-group"><label>Link Login Siswa</label><input type="text" id="settingLinkLogin" placeholder="https://siswa.contoh.co.id/"></div>
+                            <div class="form-group"><label>Link Login Ortu</label><input type="text" id="settingLinkLoginOrtu" placeholder="https://ortu.contoh.co.id/ (kosongkan = pakai Link Login Siswa)"></div>
+                            <div class="form-group"><label>Link Tutorial Siswa</label><input type="text" id="settingLinkTutorialSiswa" placeholder="https://drive.google.com/... (kosongkan = pakai link default)"></div>
+                            <div class="form-group"><label>Link Tutorial Ortu</label><input type="text" id="settingLinkTutorialOrtu" placeholder="https://drive.google.com/... (kosongkan = pakai Link Tutorial Siswa)"></div>
                             <div class="form-group"><label>Footer</label><input type="text" id="settingFooter" placeholder="Teks footer pesan WhatsApp"></div>
                             <button id="btnSaveSetting" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
@@ -4158,6 +4161,10 @@
                     document.getElementById('settingAlamat').value = result.alamat || '';
                     document.getElementById('settingTelepon').value = result.telepon || '';
                     document.getElementById('settingLinkLogin').value = result.link_login || '';
+                    // BARU: link login & tutorial terpisah Siswa/Ortu
+                    document.getElementById('settingLinkLoginOrtu').value = result.link_login_ortu || '';
+                    document.getElementById('settingLinkTutorialSiswa').value = result.link_tutorial || '';
+                    document.getElementById('settingLinkTutorialOrtu').value = result.link_tutorial_ortu || '';
                     document.getElementById('settingFooter').value = result.footer || '';
                 }
             } catch (error) {
@@ -4176,6 +4183,12 @@
                 alamat: document.getElementById('settingAlamat').value,
                 telepon: document.getElementById('settingTelepon').value,
                 linkLogin: document.getElementById('settingLinkLogin').value,
+                // BARU: link login & tutorial terpisah Siswa/Ortu.
+                // Kalau dikosongkan, server otomatis fallback ke link
+                // Siswa saat membuat pesan WA untuk Ortu.
+                linkLoginOrtu: document.getElementById('settingLinkLoginOrtu').value,
+                linkTutorial: document.getElementById('settingLinkTutorialSiswa').value,
+                linkTutorialOrtu: document.getElementById('settingLinkTutorialOrtu').value,
                 footer: document.getElementById('settingFooter').value,
                 admin: currentUser.nama,
                 username: currentUser.username
