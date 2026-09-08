@@ -833,6 +833,35 @@
             font-size: 13px;
         }
 
+        /* SUB-HEADER (dipakai untuk memisahkan blok statistik Siswa & Ortu
+           di halaman Dashboard) */
+        .dashboard-subheader {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 26px 0 14px;
+        }
+
+        .dashboard-subheader i {
+            color: var(--primary);
+            font-size: 15px;
+        }
+
+        .dashboard-subheader h3 {
+            font-size: 16px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .dashboard-subheader p {
+            width: 100%;
+            flex-basis: 100%;
+            color: var(--gray);
+            font-size: 12px;
+            margin-top: -6px;
+        }
+
         /* CARDS */
         .card {
             background: var(--white);
@@ -897,6 +926,8 @@
         .stat-icon-green { background: linear-gradient(135deg, var(--success), #27ae60); }
         .stat-icon-orange { background: linear-gradient(135deg, var(--warning), #d68910); }
         .stat-icon-purple { background: linear-gradient(135deg, var(--info), var(--dark)); }
+        .stat-icon-teal { background: linear-gradient(135deg, #16a085, #0e6655); }
+        .stat-icon-pink { background: linear-gradient(135deg, #c2185b, #880e4f); }
 
         .stat-content {
             flex: 1;
@@ -2468,6 +2499,12 @@
                         <p>Statistik dan ringkasan data siswa</p>
                     </div>
 
+                    <div class="dashboard-subheader">
+                        <i class="fas fa-user-graduate"></i>
+                        <h3>Statistik Akun Siswa</h3>
+                        <p>Ringkasan jumlah dan status pengiriman akun untuk siswa</p>
+                    </div>
+
                     <div class="dashboard-grid">
                         <div class="card card-stat">
                             <div class="stat-icon stat-icon-blue"><i class="fas fa-users"></i></div>
@@ -2495,6 +2532,47 @@
                             <div class="stat-content">
                                 <p class="stat-label">Progress</p>
                                 <h3 id="progress" class="stat-value">0%</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BARU (v1.7): Blok Statistik Akun Ortu di Dashboard.
+                         Datanya diambil dari fungsi server getDashboardOrtu()
+                         yang menghitung total, sudah terkirim, dan belum
+                         terkirim khusus untuk sheet DATA_ORTU. -->
+                    <div class="dashboard-subheader">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>Statistik Akun Ortu</h3>
+                        <p>Ringkasan jumlah dan status pengiriman akun untuk orang tua siswa</p>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card card-stat">
+                            <div class="stat-icon stat-icon-teal"><i class="fas fa-user-friends"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Ortu</p>
+                                <h3 id="totalOrtuDash" class="stat-value">0</h3>
+                            </div>
+                        </div>
+                        <div class="card card-stat">
+                            <div class="stat-icon stat-icon-green"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Sudah Terkirim</p>
+                                <h3 id="terkirimOrtuDash" class="stat-value">0</h3>
+                            </div>
+                        </div>
+                        <div class="card card-stat">
+                            <div class="stat-icon stat-icon-orange"><i class="fas fa-hourglass-half"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Belum Terkirim</p>
+                                <h3 id="belumOrtuDash" class="stat-value">0</h3>
+                            </div>
+                        </div>
+                        <div class="card card-stat">
+                            <div class="stat-icon stat-icon-pink"><i class="fas fa-percentage"></i></div>
+                            <div class="stat-content">
+                                <p class="stat-label">Progress</p>
+                                <h3 id="progressOrtuDash" class="stat-value">0%</h3>
                             </div>
                         </div>
                     </div>
@@ -3342,17 +3420,36 @@
         // DASHBOARD
         // =====================================
 
+        // BARU (v1.7): loadDashboard() sekarang mengambil statistik
+        // Siswa DAN Ortu secara paralel (Promise.all), lalu mengisi
+        // kartu-kartu statistik di masing-masing blok Dashboard.
         async function loadDashboard() {
             try {
                 showLoading();
-                const result = await apiCall('getDashboard');
-                if (result.status) {
-                    const data = result.data;
+
+                const [resultSiswa, resultOrtu] = await Promise.all([
+                    apiCall('getDashboard'),
+                    apiCall('getDashboardOrtu')
+                ]);
+
+                if (resultSiswa.status) {
+                    const data = resultSiswa.data;
                     document.getElementById('totalSiswa').textContent = data.total;
                     document.getElementById('terkirim').textContent = data.terkirim;
                     document.getElementById('belum').textContent = data.belum;
                     const progress = data.total > 0 ? Math.round((data.terkirim / data.total) * 100) : 0;
                     document.getElementById('progress').textContent = progress + '%';
+                }
+
+                if (resultOrtu.status) {
+                    const dataOrtu = resultOrtu.data;
+                    document.getElementById('totalOrtuDash').textContent = dataOrtu.total;
+                    document.getElementById('terkirimOrtuDash').textContent = dataOrtu.terkirim;
+                    document.getElementById('belumOrtuDash').textContent = dataOrtu.belum;
+                    const progressOrtu = dataOrtu.total > 0 ? Math.round((dataOrtu.terkirim / dataOrtu.total) * 100) : 0;
+                    document.getElementById('progressOrtuDash').textContent = progressOrtu + '%';
+                } else {
+                    console.error('Gagal memuat statistik ortu:', resultOrtu.message);
                 }
             } catch (error) {
                 showAlert('Error loading dashboard', 'danger');
