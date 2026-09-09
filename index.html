@@ -2680,6 +2680,13 @@
                     </div>
 
                     <div class="pagination">
+                        <div style="margin-right:auto; display:flex; align-items:center; gap:6px;">
+                            <label style="margin:0; font-size:12px; white-space:nowrap;">Tampilkan</label>
+                            <select id="siswaPerPage" class="select-filter" style="min-width:70px; padding:6px 8px;">
+                                <option value="10">10</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
                         <button id="btnPrevPage" class="btn btn-secondary">Sebelumnya</button>
                         <span id="pageInfo">Halaman 1</span>
                         <button id="btnNextPage" class="btn btn-secondary">Selanjutnya</button>
@@ -2734,6 +2741,13 @@
                     </div>
 
                     <div class="pagination">
+                        <div style="margin-right:auto; display:flex; align-items:center; gap:6px;">
+                            <label style="margin:0; font-size:12px; white-space:nowrap;">Tampilkan</label>
+                            <select id="ortuPerPage" class="select-filter" style="min-width:70px; padding:6px 8px;">
+                                <option value="10">10</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
                         <button id="btnPrevPageOrtu" class="btn btn-secondary">Sebelumnya</button>
                         <span id="pageInfoOrtu">Halaman 1</span>
                         <button id="btnNextPageOrtu" class="btn btn-secondary">Selanjutnya</button>
@@ -3094,13 +3108,14 @@
         let allSiswa = [];
         let filteredSiswa = [];
         let currentPage = 1;
-        const itemsPerPage = 10;
+        let itemsPerPageSiswa = 10;
         let charts = {};
 
         // BARU: variabel untuk Data Akun Ortu
         let allOrtu = [];
         let filteredOrtu = [];
         let currentPageOrtu = 1;
+        let itemsPerPageOrtu = 10;
 
         let statistikSekolahData = null;
         let statistikKelasData = null;
@@ -3629,8 +3644,8 @@
 
         function renderSiswaTable() {
             const tbody = document.getElementById('siswaTableBody');
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
+            const start = (currentPage - 1) * itemsPerPageSiswa;
+            const end = start + itemsPerPageSiswa;
             const paginatedData = filteredSiswa.slice(start, end);
 
             if (paginatedData.length === 0) {
@@ -3674,7 +3689,7 @@
         }
 
         function updatePagination() {
-            const totalPages = Math.ceil(filteredSiswa.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredSiswa.length / itemsPerPageSiswa);
             document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages}`;
             document.getElementById('btnPrevPage').disabled = currentPage === 1;
             document.getElementById('btnNextPage').disabled = currentPage === totalPages;
@@ -3685,8 +3700,14 @@
         });
 
         document.getElementById('btnNextPage').addEventListener('click', () => {
-            const totalPages = Math.ceil(filteredSiswa.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredSiswa.length / itemsPerPageSiswa);
             if (currentPage < totalPages) { currentPage++; renderSiswaTable(); }
+        });
+
+        document.getElementById('siswaPerPage').addEventListener('change', (e) => {
+            itemsPerPageSiswa = parseInt(e.target.value, 10);
+            currentPage = 1;
+            renderSiswaTable();
         });
 
         document.getElementById('siswaSearch').addEventListener('input', applyFilters);
@@ -3995,8 +4016,8 @@
 
         function renderOrtuTable() {
             const tbody = document.getElementById('ortuTableBody');
-            const start = (currentPageOrtu - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
+            const start = (currentPageOrtu - 1) * itemsPerPageOrtu;
+            const end = start + itemsPerPageOrtu;
             const paginatedData = filteredOrtu.slice(start, end);
 
             if (paginatedData.length === 0) {
@@ -4041,7 +4062,7 @@
         }
 
         function updatePaginationOrtu() {
-            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPage));
+            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPageOrtu));
             document.getElementById('pageInfoOrtu').textContent = `Halaman ${currentPageOrtu} dari ${totalPages}`;
             document.getElementById('btnPrevPageOrtu').disabled = currentPageOrtu === 1;
             document.getElementById('btnNextPageOrtu').disabled = currentPageOrtu === totalPages;
@@ -4052,8 +4073,14 @@
         });
 
         document.getElementById('btnNextPageOrtu').addEventListener('click', () => {
-            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPage));
+            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPageOrtu));
             if (currentPageOrtu < totalPages) { currentPageOrtu++; renderOrtuTable(); }
+        });
+
+        document.getElementById('ortuPerPage').addEventListener('change', (e) => {
+            itemsPerPageOrtu = parseInt(e.target.value, 10);
+            currentPageOrtu = 1;
+            renderOrtuTable();
         });
 
         document.getElementById('ortuSearch').addEventListener('input', applyFiltersOrtu);
