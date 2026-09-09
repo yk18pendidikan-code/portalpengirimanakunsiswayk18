@@ -2684,7 +2684,9 @@
                             <label style="margin:0; font-size:12px; white-space:nowrap;">Tampilkan</label>
                             <select id="siswaPerPage" class="select-filter" style="min-width:70px; padding:6px 8px;">
                                 <option value="10">10</option>
+                                <option value="60">60</option>
                                 <option value="100">100</option>
+                                <option value="all">All</option>
                             </select>
                         </div>
                         <button id="btnPrevPage" class="btn btn-secondary">Sebelumnya</button>
@@ -2745,7 +2747,9 @@
                             <label style="margin:0; font-size:12px; white-space:nowrap;">Tampilkan</label>
                             <select id="ortuPerPage" class="select-filter" style="min-width:70px; padding:6px 8px;">
                                 <option value="10">10</option>
+                                <option value="60">60</option>
                                 <option value="100">100</option>
+                                <option value="all">All</option>
                             </select>
                         </div>
                         <button id="btnPrevPageOrtu" class="btn btn-secondary">Sebelumnya</button>
@@ -3689,7 +3693,7 @@
         }
 
         function updatePagination() {
-            const totalPages = Math.ceil(filteredSiswa.length / itemsPerPageSiswa);
+            const totalPages = Math.max(1, Math.ceil(filteredSiswa.length / itemsPerPageSiswa));
             document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages}`;
             document.getElementById('btnPrevPage').disabled = currentPage === 1;
             document.getElementById('btnNextPage').disabled = currentPage === totalPages;
@@ -3700,12 +3704,12 @@
         });
 
         document.getElementById('btnNextPage').addEventListener('click', () => {
-            const totalPages = Math.ceil(filteredSiswa.length / itemsPerPageSiswa);
+            const totalPages = Math.max(1, Math.ceil(filteredSiswa.length / itemsPerPageSiswa));
             if (currentPage < totalPages) { currentPage++; renderSiswaTable(); }
         });
 
         document.getElementById('siswaPerPage').addEventListener('change', (e) => {
-            itemsPerPageSiswa = parseInt(e.target.value, 10);
+            itemsPerPageSiswa = e.target.value === 'all' ? Infinity : parseInt(e.target.value, 10);
             currentPage = 1;
             renderSiswaTable();
         });
@@ -4078,7 +4082,7 @@
         });
 
         document.getElementById('ortuPerPage').addEventListener('change', (e) => {
-            itemsPerPageOrtu = parseInt(e.target.value, 10);
+            itemsPerPageOrtu = e.target.value === 'all' ? Infinity : parseInt(e.target.value, 10);
             currentPageOrtu = 1;
             renderOrtuTable();
         });
