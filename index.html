@@ -3648,8 +3648,9 @@
 
         function renderSiswaTable() {
             const tbody = document.getElementById('siswaTableBody');
-            const start = (currentPage - 1) * itemsPerPageSiswa;
-            const end = start + itemsPerPageSiswa;
+            const isAll = !isFinite(itemsPerPageSiswa);
+            const start = isAll ? 0 : (currentPage - 1) * itemsPerPageSiswa;
+            const end = isAll ? filteredSiswa.length : start + itemsPerPageSiswa;
             const paginatedData = filteredSiswa.slice(start, end);
 
             if (paginatedData.length === 0) {
@@ -3693,7 +3694,7 @@
         }
 
         function updatePagination() {
-            const totalPages = Math.max(1, Math.ceil(filteredSiswa.length / itemsPerPageSiswa));
+            const totalPages = isFinite(itemsPerPageSiswa) ? Math.max(1, Math.ceil(filteredSiswa.length / itemsPerPageSiswa)) : 1;
             document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages}`;
             document.getElementById('btnPrevPage').disabled = currentPage === 1;
             document.getElementById('btnNextPage').disabled = currentPage === totalPages;
@@ -3704,7 +3705,7 @@
         });
 
         document.getElementById('btnNextPage').addEventListener('click', () => {
-            const totalPages = Math.max(1, Math.ceil(filteredSiswa.length / itemsPerPageSiswa));
+            const totalPages = isFinite(itemsPerPageSiswa) ? Math.max(1, Math.ceil(filteredSiswa.length / itemsPerPageSiswa)) : 1;
             if (currentPage < totalPages) { currentPage++; renderSiswaTable(); }
         });
 
@@ -4020,8 +4021,9 @@
 
         function renderOrtuTable() {
             const tbody = document.getElementById('ortuTableBody');
-            const start = (currentPageOrtu - 1) * itemsPerPageOrtu;
-            const end = start + itemsPerPageOrtu;
+            const isAllOrtu = !isFinite(itemsPerPageOrtu);
+            const start = isAllOrtu ? 0 : (currentPageOrtu - 1) * itemsPerPageOrtu;
+            const end = isAllOrtu ? filteredOrtu.length : start + itemsPerPageOrtu;
             const paginatedData = filteredOrtu.slice(start, end);
 
             if (paginatedData.length === 0) {
@@ -4066,7 +4068,7 @@
         }
 
         function updatePaginationOrtu() {
-            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPageOrtu));
+            const totalPages = isFinite(itemsPerPageOrtu) ? Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPageOrtu)) : 1;
             document.getElementById('pageInfoOrtu').textContent = `Halaman ${currentPageOrtu} dari ${totalPages}`;
             document.getElementById('btnPrevPageOrtu').disabled = currentPageOrtu === 1;
             document.getElementById('btnNextPageOrtu').disabled = currentPageOrtu === totalPages;
@@ -4077,7 +4079,7 @@
         });
 
         document.getElementById('btnNextPageOrtu').addEventListener('click', () => {
-            const totalPages = Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPageOrtu));
+            const totalPages = isFinite(itemsPerPageOrtu) ? Math.max(1, Math.ceil(filteredOrtu.length / itemsPerPageOrtu)) : 1;
             if (currentPageOrtu < totalPages) { currentPageOrtu++; renderOrtuTable(); }
         });
 
